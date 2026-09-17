@@ -37,7 +37,11 @@ targets:
   BiliPaiTests:
     type: bundle.unit-test
     platform: iOS
-    sources: [Tests]
+    sources:
+      - path: Tests
+        excludes: [Fixtures]
+      - path: Tests/Fixtures
+        buildPhase: resources
     dependencies:
       - target: BiliPai
   BiliPaiUITests:

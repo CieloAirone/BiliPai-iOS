@@ -129,6 +129,9 @@ final class HLSBridge: @unchecked Sendable {
     private var connections: [UUID: NWConnection] = [:]
     private let resources: [String: HLSResource]
     private let token: String
+    init(resources: [String: HLSResource], token: String) {
+        self.resources = resources; self.token = token
+    }
     init(video: DASHTrack, audio: DASHTrack?) {
         token = UUID().uuidString
         var map: [String: HLSResource] = [:]
@@ -158,6 +161,7 @@ final class HLSBridge: @unchecked Sendable {
                 switch state {
                 case .ready:
                     guard completion.claim() else { return }
+                    listener.stateUpdateHandler = nil
                     guard let self, let port = listener.port, let url = URL(string: "http://127.0.0.1:\(port.rawValue)/\(self.token)/master.m3u8") else { continuation.resume(throwing: URLError(.badURL)); return }
                     continuation.resume(returning: url)
                 case .failed(let error): if completion.claim() { continuation.resume(throwing: error) }
@@ -170,7 +174,7 @@ final class HLSBridge: @unchecked Sendable {
     }
     func stop() {
         queue.async { [self] in
-            listener?.cancel(); listener = nil
+            listener?.stateUpdateHandler = nil; listener?.cancel(); listener = nil
             tasks.values.forEach { $0.cancel() }; tasks.removeAll()
             connections.values.forEach { $0.cancel() }; connections.removeAll()
         }
