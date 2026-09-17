@@ -50,12 +50,12 @@ struct SettingsView: View {
             ForEach(SettingCategory.allCases.filter { query.isEmpty || ($0.rawValue + $0.subtitle + $0.keywords).localizedCaseInsensitiveContains(query) }) { category in
                 NavigationLink { SettingsCategoryView(category:category) } label: {
                     HStack(spacing:14) {
-                        Image(systemName:category.symbol).foregroundStyle(.tint).frame(width:38,height:38).background(Preferences.tint.opacity(0.1),in:RoundedRectangle(cornerRadius:12))
+                        Image(systemName:category.symbol).font(.system(size:18)).foregroundStyle(.secondary).frame(width:26,height:30)
                         VStack(alignment:.leading,spacing:5) { Text(category.rawValue).font(.body.weight(.medium)); Text(category.subtitle).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true) }
-                    }.padding(.vertical,7)
-                }.accessibilityIdentifier("settings.\(category.id)")
+                    }.padding(.vertical,4)
+                }.accessibilityIdentifier("settings.\(category.id)").listRowSeparator(.hidden)
             }
-        }.navigationTitle("设置").searchable(text:$query,prompt:"搜索设置")
+        }.listStyle(.plain).navigationTitle("设置").navigationBarTitleDisplayMode(.inline).searchable(text:$query,placement:.navigationBarDrawer(displayMode:.always),prompt:"搜索设置功能")
     }
 }
 struct SettingsCategoryView: View {
