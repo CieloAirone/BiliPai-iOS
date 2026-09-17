@@ -9,11 +9,16 @@ import MediaPlayer
     var title = ""
     var bridge: HLSBridge?
     var status: NSKeyValueObservation?
-    func open(bvid: String, cid: String, title: String) async {
+    func open(bvid: String, cid: String, title: String, episodeID: String? = nil) async {
         loading = true; error = ""; self.title = title
         defer { loading = false }
         do {
-            let data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":"80","fnval":"4048","fnver":"0","fourk":"1"], signed: true)
+            let data: JSON
+            if let episodeID {
+                data = try await BiliAPI.shared.request("/pgc/player/web/playurl", ["ep_id":episodeID,"cid":cid,"qn":"80","fnval":"4048","fourk":"1"])
+            } else {
+                data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":"80","fnval":"4048","fnver":"0","fourk":"1"], signed: true)
+            }
             let url: URL
             bridge?.stop(); bridge = nil
             let dashVideos = data["dash"]["video"].array.filter { $0["codecs"].string.hasPrefix("avc1") }.sorted { $0["id"].int > $1["id"].int }
@@ -71,9 +76,11 @@ struct VideoDetailView: View {
     @State private var busy = false
     @State private var coinConfirmation = false
     @State private var speed: Float = 1
+    @AppStorage("danmakuEnabled") private var danmakuEnabled = true
     var body: some View {
         ScrollView {
             NativePlayer(player: playback.player).frame(height: 235).background(.black)
+                .overlay { if danmakuEnabled && !cid.isEmpty { DanmakuOverlay(player: playback.player, cid: cid) } }
             if playback.loading { ProgressView("正在加载视频") }
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }
             VStack(alignment: .leading, spacing: 18) {
@@ -85,6 +92,7 @@ struct VideoDetailView: View {
                     Button { Task { await action("/x/v2/history/toview/add", ["bvid":video.id]) {} } } label: { Image(systemName: "text.badge.plus") }.accessibilityLabel("稍后再看")
                     ShareLink(item: URL(string: "https://www.bilibili.com/video/\(video.id)")!) { Image(systemName: "square.and.arrow.up") }
                 }.buttonStyle(.borderless).disabled(busy)
+                Toggle("弹幕", isOn: $danmakuEnabled)
                 Picker("播放速度", selection: $speed) { ForEach([Float(0.5),1,1.25,1.5,2], id: \.self) { Text(String(format: "%g×", $0)).tag($0) } }.pickerStyle(.segmented)
                     .onChange(of: speed) { _, value in playback.player.rate = value }
                 if detail["pages"].array.count > 1 {

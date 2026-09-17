@@ -18,6 +18,7 @@ targets:
     sources: [App]
     settings:
       base:
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         PRODUCT_BUNDLE_IDENTIFIER: fun.caservice.bilipai.ios
         INFOPLIST_KEY_CFBundleDisplayName: BiliPai
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
@@ -39,10 +40,16 @@ targets:
     sources: [Tests]
     dependencies:
       - target: BiliPai
+  BiliPaiUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [UITests]
+    dependencies:
+      - target: BiliPai
 schemes:
   BiliPai:
     build:
       targets:
         BiliPai: all
     test:
-      targets: [BiliPaiTests]
+      targets: [BiliPaiTests, BiliPaiUITests]

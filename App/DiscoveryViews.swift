@@ -53,8 +53,8 @@ struct DiscoveryView: View {
     var body: some View {
         List {
             Section("内容") {
-                NavigationLink { WebScreen(url: URL(string: "https://www.bilibili.com/anime/")!, title: "番剧") } label: { Label("番剧 · 网页", systemImage: "sparkles.tv") }
-                NavigationLink { WebScreen(url: URL(string: "https://live.bilibili.com/")!, title: "直播") } label: { Label("直播 · 网页", systemImage: "dot.radiowaves.left.and.right") }
+                NavigationLink { CatalogView(live: false) } label: { Label("番剧", systemImage: "sparkles.tv") }
+                NavigationLink { CatalogView(live: true) } label: { Label("直播", systemImage: "dot.radiowaves.left.and.right") }
                 NavigationLink { FeedView(mode: "排行榜").navigationTitle("排行榜") } label: { Label("排行榜", systemImage: "chart.bar") }
                 NavigationLink { SearchView() } label: { Label("搜索", systemImage: "magnifyingglass") }
             }
