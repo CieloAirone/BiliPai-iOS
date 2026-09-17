@@ -44,6 +44,8 @@ enum SettingCategory: String, CaseIterable, Identifiable {
     }
 }
 struct SettingsView: View {
+    @ScaledMetric(relativeTo:.body) private var titleSize = 16.0
+    @ScaledMetric(relativeTo:.caption) private var subtitleSize = 12.0
     @State private var query = ""
     private let colors:[Color] = [.blue,.pink,.orange,.purple,.green,.cyan,.indigo,.gray]
     private var categories:[SettingCategory] { SettingCategory.allCases.filter { query.isEmpty || ($0.rawValue+$0.subtitle+$0.keywords).localizedCaseInsensitiveContains(query) } }
@@ -56,8 +58,8 @@ struct SettingsView: View {
                             Image(systemName:category.symbol).font(.system(size:20)).foregroundStyle(.white)
                                 .frame(width:36,height:36).background(colors[SettingCategory.allCases.firstIndex(of:category) ?? 0],in:RoundedRectangle(cornerRadius:10))
                             VStack(alignment:.leading,spacing:2) {
-                                Text(category.rawValue).font(.system(size:16,weight:.medium)).foregroundStyle(.primary)
-                                Text(category.subtitle).font(.system(size:12)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
+                                Text(category.rawValue).font(.system(size:titleSize,weight:.medium)).foregroundStyle(.primary)
+                                Text(category.subtitle).font(.system(size:subtitleSize)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
                             }.frame(maxWidth:.infinity,alignment:.leading)
                             Image(systemName:"chevron.right").font(.system(size:14)).foregroundStyle(.tertiary)
                         }.padding(.horizontal,16).padding(.vertical,12).contentShape(Rectangle())
