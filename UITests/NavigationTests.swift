@@ -17,12 +17,14 @@ final class NavigationTests: XCTestCase {
         let toggle = app.switches["settings.autoplay"]
         XCTAssertTrue(toggle.waitForExistence(timeout:5))
         let previous = toggle.value as? String
-        toggle.tap()
-        XCTAssertNotEqual(toggle.value as? String,previous)
+        toggle.coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap()
+        let changed = NSPredicate { _, _ in (toggle.value as? String) != previous }
+        XCTAssertEqual(XCTWaiter.wait(for:[XCTNSPredicateExpectation(predicate:changed,object:nil)],timeout:3),.completed)
+        let playback = XCTAttachment(screenshot:app.screenshot());playback.name = "PlaybackSettings";playback.lifetime = .keepAlways;add(playback)
         app.terminate();app.launch()
         app.tabBars.buttons["我的"].tap();app.buttons["设置"].tap();app.buttons["settings.播放与画质"].tap()
         XCTAssertNotEqual(app.switches["settings.autoplay"].value as? String,previous)
-        app.switches["settings.autoplay"].tap()
+        app.switches["settings.autoplay"].coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap()
         app.navigationBars.buttons.element(boundBy:0).tap()
         let settings = XCTAttachment(screenshot: app.screenshot()); settings.name = "Settings"; settings.lifetime = .keepAlways; add(settings)
         app.navigationBars.buttons.element(boundBy: 0).tap()
