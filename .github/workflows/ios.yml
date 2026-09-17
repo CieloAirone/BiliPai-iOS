@@ -1,0 +1,66 @@
+name: Build iOS
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['docs/**', '**.md']
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 2 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  upstream:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check upstream release
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check-upstream.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: upstream-report
+          path: build/upstream-report.json
+  build:
+    needs: upstream
+    if: github.event_name != 'schedule' || needs.upstream.outputs.changed == 'true'
+    runs-on: macos-15
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app/Contents/Developer
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Unit tests on iPhone simulator
+        run: bash scripts/build-ios.sh test
+      - name: Archive unsigned IPA
+        run: bash scripts/build-ios.sh archive
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BiliPai-iOS-unsigned-${{ github.run_number }}
+          path: |
+            build/BiliPai-iOS-unsigned.ipa
+            build/BiliPai-iOS-unsigned.ipa.sha256
+          if-no-files-found: error
+          retention-days: 30
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-diagnostics-${{ github.run_number }}
+          path: |
+            build/logs
+            build/Tests.xcresult
+          retention-days: 7
+      - name: Summary
+        run: |
+          echo '## BiliPai iOS 预览构建' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Artifacts 中下载未签名 IPA，安装前需要自行签名。功能差异见 docs/PARITY.md；上游版本检查不会自动移植新功能。' >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,47 @@
+name: BiliPai
+options:
+  bundleIdPrefix: fun.caservice
+  deploymentTarget:
+    iOS: '17.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.0'
+    MARKETING_VERSION: '0.1.0'
+    CURRENT_PROJECT_VERSION: '1'
+    GENERATE_INFOPLIST_FILE: YES
+    CODE_SIGN_STYLE: Automatic
+    TARGETED_DEVICE_FAMILY: '1,2'
+targets:
+  BiliPai:
+    type: application
+    platform: iOS
+    sources: [App]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: fun.caservice.bilipai.ios
+        INFOPLIST_KEY_CFBundleDisplayName: BiliPai
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.entertainment
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
+    info:
+      path: Generated/Info.plist
+      properties:
+        UIBackgroundModes: [audio]
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoadsForMedia: true
+        CFBundleURLTypes:
+          - CFBundleURLSchemes: [bilipai]
+  BiliPaiTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [Tests]
+    dependencies:
+      - target: BiliPai
+schemes:
+  BiliPai:
+    build:
+      targets:
+        BiliPai: all
+    test:
+      targets: [BiliPaiTests]
