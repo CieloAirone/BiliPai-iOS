@@ -45,17 +45,29 @@ enum SettingCategory: String, CaseIterable, Identifiable {
 }
 struct SettingsView: View {
     @State private var query = ""
+    private let colors:[Color] = [.blue,.pink,.orange,.purple,.green,.cyan,.indigo,.gray]
+    private var categories:[SettingCategory] { SettingCategory.allCases.filter { query.isEmpty || ($0.rawValue+$0.subtitle+$0.keywords).localizedCaseInsensitiveContains(query) } }
     var body: some View {
-        List {
-            ForEach(SettingCategory.allCases.filter { query.isEmpty || ($0.rawValue + $0.subtitle + $0.keywords).localizedCaseInsensitiveContains(query) }) { category in
-                NavigationLink { SettingsCategoryView(category:category) } label: {
-                    HStack(spacing:14) {
-                        Image(systemName:category.symbol).font(.system(size:18)).foregroundStyle(.secondary).frame(width:26,height:30)
-                        VStack(alignment:.leading,spacing:5) { Text(category.rawValue).font(.body.weight(.medium)); Text(category.subtitle).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true) }
-                    }.padding(.vertical,4)
-                }.accessibilityIdentifier("settings.\(category.id)").listRowSeparator(.hidden)
-            }
-        }.listStyle(.plain).toolbar(.hidden,for:.tabBar).navigationTitle("设置").navigationBarTitleDisplayMode(.inline).searchable(text:$query,placement:.navigationBarDrawer(displayMode:.always),prompt:"搜索设置功能")
+        ScrollView {
+            VStack(spacing:0) {
+                ForEach(categories) { category in
+                    NavigationLink { SettingsCategoryView(category:category) } label: {
+                        HStack(spacing:14) {
+                            Image(systemName:category.symbol).font(.system(size:20)).foregroundStyle(.white)
+                                .frame(width:36,height:36).background(colors[SettingCategory.allCases.firstIndex(of:category) ?? 0],in:RoundedRectangle(cornerRadius:10))
+                            VStack(alignment:.leading,spacing:2) {
+                                Text(category.rawValue).font(.system(size:16,weight:.medium)).foregroundStyle(.primary)
+                                Text(category.subtitle).font(.system(size:12)).foregroundStyle(.secondary).fixedSize(horizontal:false,vertical:true)
+                            }.frame(maxWidth:.infinity,alignment:.leading)
+                            Image(systemName:"chevron.right").font(.system(size:14)).foregroundStyle(.tertiary)
+                        }.padding(.horizontal,16).padding(.vertical,12).contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityIdentifier("settings.\(category.id)")
+                    if category != categories.last { Divider().padding(.leading,66) }
+                }
+            }.background(Color(uiColor:.secondarySystemGroupedBackground),in:RoundedRectangle(cornerRadius:14)).padding(16)
+        }.background(Color(uiColor:.systemGroupedBackground)).toolbar(.hidden,for:.tabBar)
+            .navigationTitle("设置").navigationBarTitleDisplayMode(.inline)
+            .searchable(text:$query,placement:.navigationBarDrawer(displayMode:.always),prompt:"搜索设置功能")
     }
 }
 struct SettingsCategoryView: View {
@@ -203,6 +215,10 @@ struct DanmakuPreferences: View {
     }
 }
 struct HomePreferences: View {
+    @AppStorage("coverRatio") private var coverRatio = "16:10"
+    @AppStorage("durationStyle") private var durationStyle = "outside"
+    @AppStorage("compactStats") private var compactStats = false
+    @AppStorage("fullCardTitle") private var fullTitle = false
     @AppStorage("gridColumns") private var columns = 0
     @AppStorage("cardWidth") private var width = 155.0
     @AppStorage("showAuthor") private var author = true
@@ -217,6 +233,10 @@ struct HomePreferences: View {
                 Picker("网格列数",selection:$columns) { Text("自动").tag(0);ForEach(1...4,id:\.self) { Text("\($0) 列").tag($0) } }
                 if columns == 0 { SliderRow(title:"推荐流卡片宽度",value:$width,range:120...260,step:10,suffix:"") }
                 Toggle("UP主名称",isOn:$author)
+                Picker("卡片封面比例",selection:$coverRatio) { ForEach(["16:9","4:3","16:10"],id:\.self) { Text($0).tag($0) } }
+                Picker("首页视频时长",selection:$durationStyle) { Text("封面外").tag("outside");Text("封面内无底色").tag("overlay");Text("隐藏").tag("hidden") }
+                Toggle("统计信息贴封面（紧凑）",isOn:$compactStats)
+                Toggle("完整卡片展示",isOn:$fullTitle)
             }
             Section("推荐流") { Stepper("每次刷新数量：\(count)",value:$count,in:10...50,step:10);Text("刷新后生效。").font(.caption).foregroundStyle(.secondary) }
         }

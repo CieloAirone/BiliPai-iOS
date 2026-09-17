@@ -70,6 +70,7 @@ struct Video: Identifiable, Hashable, Codable {
     var cover: String
     var author: String
     var views: Int
+    var duration: String?
     init(_ json: JSON) {
         id = json["bvid"].string
         if id.isEmpty { id = json["history"]["bvid"].string }
@@ -82,5 +83,7 @@ struct Video: Identifiable, Hashable, Codable {
         if author.isEmpty { author = json["author_name"].string }
         views = json["stat"]["view"].int
         if views == 0 { views = json["play"].int }
+        let value = json["duration"].string.isEmpty ? json["length"].string:json["duration"].string
+        duration = VideoPresentation.duration(value)
     }
 }

@@ -64,14 +64,49 @@ struct Cover: View {
         placeholder: { Rectangle().fill(Color.secondary.opacity(0.1)).overlay(Image(systemName: "play.rectangle").foregroundStyle(.secondary)) }
     }
 }
+enum VideoPresentation {
+    static func ratio(_ style:String) -> CGFloat {
+        switch style { case "16:9":return 16.0/9;case "4:3":return 4.0/3;default:return 16.0/10 }
+    }
+    static func duration(_ value:String) -> String? {
+        if value.contains(":") {
+            let parts = value.split(separator:":",omittingEmptySubsequences:false)
+            guard (2...3).contains(parts.count),parts.allSatisfy({ Int($0) != nil && Int($0)! >= 0 }) else { return nil }
+            return value
+        }
+        guard let seconds = Int(value),seconds > 0 else { return nil }
+        return seconds >= 3600 ? String(format:"%d:%02d:%02d",seconds/3600,seconds/60%60,seconds%60):String(format:"%d:%02d",seconds/60,seconds%60)
+    }
+    static func count(_ value:Int) -> String { value >= 10000 ? String(format:"%.1f万",Double(value)/10000):String(value) }
+}
 struct VideoCard: View {
     @AppStorage("showAuthor") private var showAuthor = true
+    @AppStorage("coverRatio") private var ratio = "16:10"
+    @AppStorage("durationStyle") private var durationStyle = "outside"
+    @AppStorage("compactStats") private var compactStats = false
+    @AppStorage("fullCardTitle") private var fullTitle = false
     let video: Video
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Cover(url: video.cover).frame(height: 108).clipped().clipShape(RoundedRectangle(cornerRadius: 12))
-            Text(video.title).font(.subheadline.weight(.medium)).lineLimit(2).frame(height: 40, alignment: .topLeading)
+            Color.clear.aspectRatio(VideoPresentation.ratio(ratio),contentMode:.fit)
+                .overlay { Cover(url:video.cover) }.clipped()
+                .overlay(alignment:.bottom) {
+                    HStack {
+                        if compactStats { Label(VideoPresentation.count(video.views),systemImage:"play.fill") }
+                        Spacer(minLength:4)
+                        if durationStyle == "overlay",let duration = video.duration { Text(duration) }
+                    }.font(.caption2).foregroundStyle(.white).shadow(color:.black,radius:2).padding(7)
+                }.clipShape(RoundedRectangle(cornerRadius:12))
+            Text(video.title).font(.subheadline.weight(.medium)).lineLimit(fullTitle ? nil:2)
+                .frame(minHeight:40,alignment:.topLeading).frame(maxWidth:.infinity,alignment:.leading)
             if showAuthor { Text(video.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
+            if !compactStats || durationStyle == "outside" {
+                HStack {
+                    if !compactStats { Label(VideoPresentation.count(video.views),systemImage:"play") }
+                    Spacer(minLength:4)
+                    if durationStyle == "outside",let duration = video.duration { Text(duration) }
+                }.font(.caption2).foregroundStyle(.secondary)
+            }
         }.contentShape(Rectangle())
     }
 }
