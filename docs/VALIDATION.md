@@ -35,3 +35,14 @@
 - Home / HomeDark / Settings / PlaybackSettings / WebDAVSettings 等截图更新为此次构建。
 - IPA 版本 `0.1.0 (6)`，包标识 `fun.caservice.bilipai.ios`；SHA256 `afe00bf92f5f281269f383d8b836f76ba3fa6be851b3a34421c0bcaa3827661c`。
 - 全部 Android 设置与视觉一致性仍未完成；真机、PiP、用户 WebDAV、生物识别与网络切换需继续验收。
+
+## Build 7 顶部分类、番剧与字幕
+
+- 构建提交：`951a31aee6d3259d3631c80a912bacde001ccb23`。
+- Actions：https://github.com/CieloAirone/BiliPai-iOS/actions/runs/35236025482
+- 29 项单元测试、6 项 UI 测试全部通过；Release archive 成功。
+- 分类栏测试测量五项按钮宽高、中心 Y 坐标及相邻 4pt 间距，误差不超过 0.5pt；覆盖 light/dark 首页与 320pt 容器（内部栏宽 288pt）。截图 `CategoryBoxes-light.png`、`CategoryBoxes-dark.png`、`CategoryBoxes-320pt.png`；`CategoryBar-*` 是相同截图的顶部裁剪。
+- 番剧真实请求复现：省略 type 返回 -400，补 type=1 返回 code 0。前两页各 20 条且第二页 20 条均为新记录，详情 23 集。UI 路由/详情/分页通过依赖注入数据验证，未把 UI 测试数据误称为真实网络验收。
+- 字幕测试提供两条同语言 AI/人工轨道，验证“仅非 AI”选择正确轨道，并通过 AVPlayerItemLegibleOutput 收到实际解码文本；VTT 转换检查时间戳、转义和异常时序。
+- iOS 会本地化字幕 displayName，因此不使用名称匹配，改用稳定的 HLS CHARACTERISTICS 轨道标识。
+- SHA256：`2dffbeb95f3e5ad3e9c9aad5701709294c63f905055886c8c1c170c37ad1f6b4`，版本 `0.1.0 (7)`。
