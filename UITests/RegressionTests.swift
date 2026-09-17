@@ -7,10 +7,13 @@ final class RegressionTests:XCTestCase {
         let playing = NSPredicate { _,_ in (Int(frames.label) ?? 0) > 2 }
         XCTAssertEqual(XCTWaiter.wait(for:[XCTNSPredicateExpectation(predicate:playing,object:nil)],timeout:15),.completed)
         let fullscreen = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'full' OR label CONTAINS '全屏'")).firstMatch
+        if !fullscreen.exists { app.otherElements["Video"].firstMatch.tap() }
         XCTAssertTrue(fullscreen.waitForExistence(timeout:5),app.debugDescription)
         fullscreen.tap()
         let pause = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'pause' OR label CONTAINS '暂停'")).firstMatch
+        if !pause.exists { app.otherElements["Video"].firstMatch.tap() }
         XCTAssertTrue(pause.waitForExistence(timeout:5),app.debugDescription)
+        XCTAssertGreaterThan(app.otherElements["Video"].firstMatch.frame.height,300)
         let screenshot = XCTAttachment(screenshot:app.screenshot());screenshot.name = "NativeFullscreenVideo";screenshot.lifetime = .keepAlways;add(screenshot)
         let close = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'full' OR label == 'Done' OR label == 'Close' OR label CONTAINS '退出全屏' OR label == '完成'")).firstMatch
         XCTAssertTrue(close.exists,app.debugDescription);close.tap()
