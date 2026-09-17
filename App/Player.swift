@@ -92,6 +92,8 @@ struct NativePlayer: UIViewControllerRepresentable {
     @MainActor final class Coordinator: NSObject, AVPlayerViewControllerDelegate {
         var token: NSObjectProtocol?
         var background = true
+        private var presentationRetention:Coordinator?
+        private func updatePresentationRetention() { presentationRetention = lifetime.fullScreen || lifetime.pictureInPicture ? self:nil }
         let lifetime: PlayerControllerLifetime
         init(player: AVPlayer, onRelease: @escaping () -> Void) {
             lifetime = PlayerControllerLifetime(onRelease: onRelease)
@@ -101,21 +103,21 @@ struct NativePlayer: UIViewControllerRepresentable {
             }
         }
         func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-            lifetime.fullScreen = true
+            lifetime.fullScreen = true;updatePresentationRetention()
             coordinator.animate(alongsideTransition: nil) { [weak self] transition in
-                if transition.isCancelled { self?.lifetime.fullScreen = false; self?.lifetime.releaseIfDetached() }
+                if transition.isCancelled { self?.lifetime.fullScreen = false; self?.lifetime.releaseIfDetached();self?.updatePresentationRetention() }
             }
         }
         func playerViewController(_ playerViewController: AVPlayerViewController, willEndFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
             coordinator.animate(alongsideTransition: nil) { [weak self] transition in
                 guard !transition.isCancelled else { return }
                 self?.lifetime.fullScreen = false
-                self?.lifetime.releaseIfDetached()
+                self?.lifetime.releaseIfDetached();self?.updatePresentationRetention()
             }
         }
-        func playerViewControllerWillStartPictureInPicture(_ playerViewController: AVPlayerViewController) { lifetime.pictureInPicture = true }
-        func playerViewControllerDidStopPictureInPicture(_ playerViewController: AVPlayerViewController) { lifetime.pictureInPicture = false; lifetime.releaseIfDetached() }
-        func playerViewController(_ playerViewController: AVPlayerViewController, failedToStartPictureInPictureWithError error: Error) { lifetime.pictureInPicture = false; lifetime.releaseIfDetached() }
+        func playerViewControllerWillStartPictureInPicture(_ playerViewController: AVPlayerViewController) { lifetime.pictureInPicture = true;updatePresentationRetention() }
+        func playerViewControllerDidStopPictureInPicture(_ playerViewController: AVPlayerViewController) { lifetime.pictureInPicture = false; lifetime.releaseIfDetached();updatePresentationRetention() }
+        func playerViewController(_ playerViewController: AVPlayerViewController, failedToStartPictureInPictureWithError error: Error) { lifetime.pictureInPicture = false; lifetime.releaseIfDetached();updatePresentationRetention() }
         deinit { if let token { NotificationCenter.default.removeObserver(token) } }
     }
     func makeCoordinator() -> Coordinator { Coordinator(player: player, onRelease: onRelease) }
@@ -170,7 +172,7 @@ struct VideoDetailView: View {
     @State private var descriptionExpanded = UserDefaults.standard.bool(forKey:"expandDescription")
     var body: some View {
         ScrollView {
-            NativePlayer(player: playback.player, onRelease: { playback.stop(bvid: video.id, cid: cid) }).frame(height: 235).background(.black)
+            NativePlayer(player: playback.player, onRelease: { playback.onFinished = nil;playback.stop(bvid: video.id, cid: cid) }).frame(height: 235).background(.black)
                 .overlay { if danmakuEnabled && !cid.isEmpty { DanmakuOverlay(player: playback.player, cid: cid) } }
             if playback.loading { ProgressView("正在加载视频") }
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }

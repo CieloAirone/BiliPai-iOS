@@ -15,8 +15,14 @@ struct RegressionFixtureRoot:View {
     static var root:BiliComment { BiliComment(JSON(["rpid":"1","rcount":21,"member":["uname":"顶楼作者"],"content":["message":"这是顶楼评论"]])) }
     static func replies(_ path:String,_ params:[String:String]) async throws -> JSON {
         let page = Int(params["pn"] ?? "1") ?? 1
-        let replies = (0..<(page == 1 ? 20:1)).map { i -> [String:Any] in
-            ["rpid":String((page-1)*20+i+2),"root":"1","parent":page == 2 ? "2":"1","member":["uname":"回复用户"],"content":["message":page == 2 ? "这是回复的回复":"楼内回复 \(i+1)"]]
+        var replies:[[String:Any]] = []
+        let count = page == 1 ? 20:1
+        for i in 0..<count {
+            let message = page == 2 ? "这是回复的回复":"楼内回复 \(i+1)"
+            let id = String((page-1)*20+i+2)
+            let parent = page == 2 ? "2":"1"
+            let row:[String:Any] = ["rpid":id,"root":"1","parent":parent,"member":["uname":"回复用户"],"content":["message":message]]
+            replies.append(row)
         }
         return JSON(["page":["count":21],"replies":replies])
     }

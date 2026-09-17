@@ -88,6 +88,7 @@ struct AppearancePreferences: View {
     @AppStorage("appearance") private var appearance = "system"
     @AppStorage("accent") private var accent = "blue"
     @AppStorage("customAccent") private var customAccent = "007AFF"
+    @State private var hexInput = ""
     @AppStorage("fontScale") private var fontScale = 1.0
     var body: some View {
         Form {
@@ -97,7 +98,11 @@ struct AppearancePreferences: View {
             }
             Section("自定义主题颜色") {
                 ColorPicker("主题色",selection:Binding(get:{ Color(hex:customAccent) },set:{ customAccent = $0.hexRGB;accent = "custom" }),supportsOpacity:false)
-                HStack { Text("HEX");TextField("007AFF",text:Binding(get:{ customAccent },set:{ let value = $0.replacingOccurrences(of:"#",with:"").uppercased();if value.matchesHexColor { customAccent = value;accent = "custom" } })).textInputAutocapitalization(.characters).autocorrectionDisabled() }
+                HStack {
+                    Text("HEX")
+                    TextField("007AFF",text:$hexInput).textInputAutocapitalization(.characters).autocorrectionDisabled().onSubmit { applyHex() }
+                    Button("应用") { applyHex() }.disabled(!hexInput.replacingOccurrences(of:"#",with:"").matchesHexColor)
+                }.onAppear { hexInput = customAccent }.onChange(of:customAccent) { _,value in hexInput = value }
             }
             Section("字体与显示大小") {
                 SliderRow(title:"字体缩放",value:$fontScale,range:0.8...1.4,step:0.1,suffix:"×")
@@ -106,6 +111,11 @@ struct AppearancePreferences: View {
             Section("应用图标") { HStack { Image(uiImage:UIImage(named:"AppIcon60x60") ?? UIImage()).resizable().frame(width:48,height:48).clipShape(RoundedRectangle(cornerRadius:10));Text("蓝雪女仆 · 无留白") };Text("深色图标由 iOS 18 及以上的主屏幕外观控制。").font(.caption).foregroundStyle(.secondary) }
         }
     }
+    private func applyHex() {
+        let value = hexInput.replacingOccurrences(of:"#",with:"").uppercased()
+        if value.matchesHexColor { customAccent = value;accent = "custom" }
+    }
+
 }
 struct SliderRow: View {
     let title: String
