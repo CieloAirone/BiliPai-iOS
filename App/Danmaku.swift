@@ -84,35 +84,7 @@ struct DanmakuOverlay: View {
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 30)) { _ in
             Canvas { context, size in
-                let current = player.currentTime().seconds
-                guard current.isFinite else { return }
-                // Quantize each lane to one entry per 2 seconds to keep a bounded draw budget.
-                var low = 0; var high = items.count
-                while low < high {
-                    let mid = (low + high) / 2
-                    if items[mid].time <= current { low = mid + 1 } else { high = mid }
-                }
-                let active = items[max(0, low - limit)..<low].filter { current - $0.time < duration }
-                var occupied = Set<Int>()
-                for item in active {
-                    if Preferences.lines(keywords).contains(where:item.text.localizedCaseInsensitiveContains) { continue }
-                    if item.mode == 4 && !bottom || item.mode == 5 && !top || [1,2,3,6].contains(item.mode) && !scroll { continue }
-                    let rows = max(1,Int((size.height * area - 40) / (fontSize + 9)))
-                    let lane = abs(item.id % rows)
-                    let slot = lane * 100000 + Int(item.time / 2)
-                    guard occupied.insert(slot).inserted else { continue }
-                    let color = Color(red: Double((item.color >> 16) & 255)/255, green: Double((item.color >> 8) & 255)/255, blue: Double(item.color & 255)/255)
-                    let text = Text(item.text).font(.system(size: fontSize, weight: .semibold)).foregroundColor(color)
-                    let resolved = context.resolve(text)
-                    let width = resolved.measure(in: CGSize(width: 1600, height: 30)).width
-                    let progress = (current - item.time) / duration
-                    var x = size.width - progress * (size.width + width)
-                    var y = CGFloat(lane) * (fontSize + 9) + 20
-                    if item.mode == 4 { x = (size.width - width)/2; y = size.height * area - 40 - CGFloat(lane % 2) * 24 }
-                    if item.mode == 5 { x = (size.width - width)/2; y = 20 + CGFloat(lane % 2) * 24 }
-                    if item.mode == 6 { x = -width + progress * (size.width + width) }
-                    var shadow = context; shadow.addFilter(.shadow(color: .black.opacity(0.9), radius: 1)); shadow.draw(resolved, at: CGPoint(x: x, y: y), anchor: .topLeading)
-                }
+                draw(context:context,size:size)
             }
         }.opacity(opacity).clipped().allowsHitTesting(false).accessibilityHidden(true)
         .overlay(alignment: .topTrailing) { if !failure.isEmpty { Text("弹幕暂不可用").font(.caption2).padding(4).background(.black.opacity(0.5)).foregroundStyle(.white) } }
@@ -132,4 +104,36 @@ struct DanmakuOverlay: View {
             }
         }
     }
+    private func draw(context:GraphicsContext,size:CGSize) {
+                let current = player.currentTime().seconds
+                guard current.isFinite else { return }
+                // Quantize each lane to one entry per 2 seconds to keep a bounded draw budget.
+                var low = 0; var high = items.count
+                while low < high {
+                    let mid = (low + high) / 2
+                    if items[mid].time <= current { low = mid + 1 } else { high = mid }
+                }
+                let active = items[max(0, low - limit)..<low].filter { current - $0.time < duration }
+                var occupied = Set<Int>()
+                for item in active {
+                    if Preferences.lines(keywords).contains(where:item.text.localizedCaseInsensitiveContains) { continue }
+                    if item.mode == 4 && !bottom || item.mode == 5 && !top || [1,2,3,6].contains(item.mode) && !scroll { continue }
+                    let rows = max(1,Int((size.height * CGFloat(area) - 40) / CGFloat(fontSize + 9)))
+                    let lane = abs(item.id % rows)
+                    let slot = lane * 100000 + Int(item.time / 2)
+                    guard occupied.insert(slot).inserted else { continue }
+                    let color = Color(red: Double((item.color >> 16) & 255)/255, green: Double((item.color >> 8) & 255)/255, blue: Double(item.color & 255)/255)
+                    let text = Text(item.text).font(.system(size: CGFloat(fontSize), weight: .semibold)).foregroundColor(color)
+                    let resolved = context.resolve(text)
+                    let width = resolved.measure(in: CGSize(width: 1600, height: 30)).width
+                    let progress = CGFloat((current - item.time) / duration)
+                    var x = size.width - progress * (size.width + width)
+                    var y = CGFloat(lane) * CGFloat(fontSize + 9) + 20
+                    if item.mode == 4 { x = (size.width - width)/2; y = size.height * CGFloat(area) - 40 - CGFloat(lane % 2) * 24 }
+                    if item.mode == 5 { x = (size.width - width)/2; y = 20 + CGFloat(lane % 2) * 24 }
+                    if item.mode == 6 { x = -width + progress * (size.width + width) }
+                    var shadow = context; shadow.addFilter(.shadow(color: .black.opacity(0.9), radius: 1)); shadow.draw(resolved, at: CGPoint(x: x, y: y), anchor: .topLeading)
+                }
+    }
+
 }

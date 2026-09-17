@@ -208,6 +208,7 @@ struct StoragePreferences: View {
                 LabeledContent("网络缓存",value:ByteCountFormatter.string(fromByteCount:Int64(cacheSize),countStyle:.file))
                 Button("清除缓存",role:.destructive) { clear = true }
             }
+            Section("云备份") { NavigationLink("WebDAV 云备份") { WebDAVSettings() } }
             Section("设置分享") {
                 Button("导出设置") { do { document = SettingsDocument(data:try Preferences.export());exporting = true } catch { message = error.localizedDescription } }
                 Button("从文件导入设置") { importing = true }
