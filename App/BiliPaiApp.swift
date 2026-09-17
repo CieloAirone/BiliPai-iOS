@@ -95,17 +95,41 @@ struct HomeView: View {
                 }.accessibilityLabel("搜索")
                 NavigationLink { SettingsView() } label: { Image(systemName: "gearshape").frame(width: 36, height: 36) }.accessibilityLabel("设置")
             }.padding(.horizontal)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(["推荐","热门","排行榜"], id: \.self) { tab in
-                        Button(tab) { category = tab }.font(.subheadline.weight(category == tab ? .bold:.regular)).padding(.horizontal, 18).padding(.vertical, 9).background(category == tab ? Color.blue.opacity(0.12):Color.clear, in: Capsule())
-                    }
-                    NavigationLink("直播") { CatalogView(live: true) }.padding(9)
-                    NavigationLink("番剧") { CatalogView(live: false) }.padding(9)
-                }.padding(.horizontal)
-            }
+            HStack(spacing: 4) {
+                ForEach(["推荐", "热门", "排行榜"], id: \.self) { tab in
+                    Button { category = tab } label: {
+                        HomeCategoryLabel(title: tab, selected: category == tab)
+                    }.buttonStyle(.plain)
+                }
+                NavigationLink { CatalogView(live: true) } label: {
+                    HomeCategoryLabel(title: "直播")
+                }.buttonStyle(.plain)
+                NavigationLink { CatalogView(live: false) } label: {
+                    HomeCategoryLabel(title: "番剧")
+                }.buttonStyle(.plain)
+            }.padding(.horizontal, 16)
             FeedView(mode: category).id(category)
         }.toolbar(.hidden, for: .navigationBar)
+    }
+}
+// Every category uses the same typography and equal-width touch target.
+private struct HomeCategoryLabel: View {
+    let title: String
+    var selected = false
+    var body: some View {
+        Text(title)
+            .font(.subheadline.weight(.medium))
+            .tracking(0)
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+            .foregroundStyle(selected ? Preferences.tint : Color.secondary)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background {
+                if selected {
+                    Capsule().fill(Preferences.tint.opacity(0.12)).padding(.vertical, 4)
+                }
+            }
+            .contentShape(Rectangle())
     }
 }
 struct FeedView: View {

@@ -32,7 +32,9 @@ final class NavigationTests: XCTestCase {
         XCTAssertTrue(app.navigationBars["听视频"].waitForExistence(timeout: 5))
     }
     func testSettingsSearchOpensBackupAndDanmaku() {
-        let app = XCUIApplication();app.launch()
+        let app = XCUIApplication();app.launchArguments += ["-appearance", "dark"];app.launch()
+        XCTAssertTrue(app.tabBars.buttons["推荐"].waitForExistence(timeout:15))
+        let darkHome = XCTAttachment(screenshot:app.screenshot());darkHome.name = "HomeDark";darkHome.lifetime = .keepAlways;add(darkHome)
         app.tabBars.buttons["我的"].tap();app.buttons["设置"].tap()
         let search = app.searchFields.firstMatch
         XCTAssertTrue(search.waitForExistence(timeout:5));search.tap();search.typeText("WebDAV")
