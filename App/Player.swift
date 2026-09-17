@@ -20,6 +20,7 @@ import MediaPlayer
         loading = true; error = ""; subtitleError = ""; self.title = title
         defer { loading = false }
         do {
+            async let subtitleRequest = SubtitleService.tracks(bvid:bvid,cid:cid)
             let data: JSON
             let preferred = PlaybackOptions.quality(cellular:NetworkState.shared.cellular)
             if let episodeID {
@@ -28,8 +29,8 @@ import MediaPlayer
                 data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":String(preferred),"fnval":"4048","fnver":"0","fourk":"1"], signed: true)
             }
             var subtitles:[BiliSubtitle] = []
-            do { subtitles = try await SubtitleService.tracks(bvid:bvid,cid:cid) }
-            catch { if !Task.isCancelled { subtitleError = "字幕暂不可用：" + error.localizedDescription } }
+            do { subtitles = try await subtitleRequest }
+            catch { if !Task.isCancelled && UserDefaults.standard.string(forKey:"subtitleAuto") != "off" { subtitleError = "字幕暂不可用：" + error.localizedDescription } }
             let url: URL
             bridge?.stop(); bridge = nil
             let dashVideos = data["dash"]["video"].array.filter { $0["codecs"].string.hasPrefix("avc1") }.sorted { $0["id"].int > $1["id"].int }
@@ -80,6 +81,8 @@ import MediaPlayer
                     }
                 } catch { subtitleError = "字幕暂不可用：" + error.localizedDescription }
             }
+            try Task.checkCancellation()
+            guard player.currentItem === item else { return }
             let saved = UserDefaults.standard.double(forKey: "position.\(bvid).\(cid)")
             if saved > 0 && UserDefaults.standard.bool(forKey:"rememberPosition") && !UserDefaults.standard.bool(forKey:"privacyMode") { await player.seek(to: CMTime(seconds: saved, preferredTimescale: 600)) }
             if UserDefaults.standard.bool(forKey:"autoplay") { player.playImmediately(atRate:PlaybackOptions.speed()) }

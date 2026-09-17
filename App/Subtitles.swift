@@ -61,6 +61,14 @@ private final class SubtitleRedirectPolicy:NSObject,URLSessionTaskDelegate {
 }
 enum SubtitleService {
     static func tracks(bvid:String,cid:String) async throws -> [BiliSubtitle] {
+        try await withThrowingTaskGroup(of:[BiliSubtitle].self) { group in
+            group.addTask { try await metadata(bvid:bvid,cid:cid) }
+            group.addTask { try await Task.sleep(for:.seconds(4));throw URLError(.timedOut) }
+            defer { group.cancelAll() }
+            return try await group.next() ?? []
+        }
+    }
+    private static func metadata(bvid:String,cid:String) async throws -> [BiliSubtitle] {
         let data = try await BiliAPI.shared.request("/x/player/wbi/v2",["bvid":bvid,"cid":cid],signed:true)
         var seen = Set<String>()
         return data["subtitle"]["subtitles"].array.compactMap(BiliSubtitle.parse).filter { seen.insert($0.id).inserted }

@@ -36,15 +36,27 @@ final class SubtitleTests:XCTestCase {
         let loadedGroup = try await asset.loadMediaSelectionGroup(for:.legible)
         let group = try XCTUnwrap(loadedGroup)
         let option = try XCTUnwrap(group.options.first)
+        XCTAssertEqual(option.displayName,subtitle.name)
         let item = AVPlayerItem(asset:asset)
+        let collector = SubtitleCollector()
+        let output = AVPlayerItemLegibleOutput()
+        output.setDelegate(collector,queue:.main);item.add(output)
         let player = AVPlayer(playerItem:item);player.appliesMediaSelectionCriteriaAutomatically = false
         item.select(option,in:group);player.play()
         defer { player.pause();player.replaceCurrentItem(with:nil) }
         for _ in 0..<50 {
-            if player.currentTime().seconds > 1 { break }
+            if player.currentTime().seconds > 1 && collector.strings.contains(where:{ $0.contains("字幕回归测试") }) { break }
             try await Task.sleep(for:.milliseconds(200))
         }
+        XCTAssertTrue(collector.strings.contains(where:{ $0.contains("字幕回归测试") }))
         XCTAssertGreaterThan(player.currentTime().seconds,1)
         XCTAssertEqual(item.currentMediaSelection.selectedMediaOption(in:group),option)
+    }
+}
+
+private final class SubtitleCollector:NSObject,AVPlayerItemLegibleOutputPushDelegate {
+    var strings:[String] = []
+    func legibleOutput(_ output:AVPlayerItemLegibleOutput,didOutputAttributedStrings strings:[NSAttributedString],nativeSampleBuffers:[Any],forItemTime itemTime:CMTime) {
+        self.strings += strings.map(\.string)
     }
 }
