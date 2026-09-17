@@ -13,10 +13,11 @@ final class RegressionTests:XCTestCase {
         let pause = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'pause' OR label CONTAINS '暂停'")).firstMatch
         if !pause.exists { app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap() }
         XCTAssertTrue(pause.waitForExistence(timeout:5),app.debugDescription)
-        XCTAssertFalse(app.navigationBars["播放器测试"].isHittable)
+        XCTAssertFalse(app.navigationBars["播放器测试"].exists)
         let screenshot = XCTAttachment(screenshot:app.screenshot());screenshot.name = "NativeFullscreenVideo";screenshot.lifetime = .keepAlways;add(screenshot)
-        let close = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'full' OR label == 'Done' OR label == 'Close' OR label CONTAINS '退出全屏' OR label == '完成'")).firstMatch
-        XCTAssertTrue(close.exists,app.debugDescription);close.tap()
+        let close = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'full' OR label CONTAINS[c] 'done' OR label CONTAINS[c] 'close' OR label CONTAINS[c] 'minimize' OR label CONTAINS '退出全屏' OR label == '完成'")).firstMatch
+        if !close.exists { app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap() }
+        XCTAssertTrue(close.waitForExistence(timeout:2),app.debugDescription);close.tap()
         XCTAssertTrue(app.staticTexts["媒体仍加载"].waitForExistence(timeout:5))
         let before = Int(frames.label) ?? 0
         let advancing = NSPredicate { _,_ in (Int(frames.label) ?? 0) > before + 2 }
