@@ -31,4 +31,17 @@ final class NavigationTests: XCTestCase {
         app.tabBars.buttons["听视频"].tap()
         XCTAssertTrue(app.navigationBars["听视频"].waitForExistence(timeout: 5))
     }
+    func testSettingsSearchOpensBackupAndDanmaku() {
+        let app = XCUIApplication();app.launch()
+        app.tabBars.buttons["我的"].tap();app.buttons["设置"].tap()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout:5));search.tap();search.typeText("WebDAV")
+        app.buttons["settings.存储与备份"].tap()
+        XCTAssertTrue(app.buttons["WebDAV 云备份"].waitForExistence(timeout:5))
+        app.buttons["WebDAV 云备份"].tap()
+        XCTAssertTrue(app.secureTextFields["密码或应用专用密码"].waitForExistence(timeout:5))
+        XCTAssertFalse(app.buttons["备份到服务器"].isEnabled)
+        let backup = XCTAttachment(screenshot:app.screenshot());backup.name = "WebDAVSettings";backup.lifetime = .keepAlways;add(backup)
+    }
+
 }

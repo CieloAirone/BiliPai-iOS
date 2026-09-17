@@ -55,7 +55,7 @@ struct SettingsView: View {
                     }.padding(.vertical,4)
                 }.accessibilityIdentifier("settings.\(category.id)").listRowSeparator(.hidden)
             }
-        }.listStyle(.plain).navigationTitle("设置").navigationBarTitleDisplayMode(.inline).searchable(text:$query,placement:.navigationBarDrawer(displayMode:.always),prompt:"搜索设置功能")
+        }.listStyle(.plain).toolbar(.hidden,for:.tabBar).navigationTitle("设置").navigationBarTitleDisplayMode(.inline).searchable(text:$query,placement:.navigationBarDrawer(displayMode:.always),prompt:"搜索设置功能")
     }
 }
 struct SettingsCategoryView: View {
