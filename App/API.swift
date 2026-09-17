@@ -55,6 +55,9 @@ actor BiliAPI {
         let base = path.hasPrefix("https://") ? path : "https://api.bilibili.com" + path
         guard let url = URL(string: base + (post || values.isEmpty ? "" : "?" + WBI.query(values))) else { throw URLError(.badURL) }
         var request = URLRequest(url: url)
+        if path.hasPrefix("/x/space/"),let mid = params["mid"] {
+            request.setValue("https://space.bilibili.com/"+mid,forHTTPHeaderField:"Referer")
+        }
         if post { request.httpMethod = "POST"; request.httpBody = Data(WBI.query(values).utf8); request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type") }
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw BiliError(message: "网络请求失败，请稍后重试") }

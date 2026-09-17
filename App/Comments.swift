@@ -4,6 +4,7 @@ struct BiliComment: Identifiable {
     let id: String
     let rootID: String
     let parentID: String
+    let mid: String
     let user: String
     let avatar: String
     let message: String
@@ -15,6 +16,7 @@ struct BiliComment: Identifiable {
         id = value["rpid_str"].string.isEmpty ? value["rpid"].string : value["rpid_str"].string
         rootID = value["root_str"].string.isEmpty ? value["root"].string : value["root_str"].string
         parentID = value["parent_str"].string.isEmpty ? value["parent"].string : value["parent_str"].string
+        mid = value["member"]["mid"].string
         user = value["member"]["uname"].string
         avatar = value["member"]["avatar"].string
         message = value["content"]["message"].string
@@ -67,9 +69,12 @@ struct BiliComment: Identifiable {
 struct CommentRow: View {
     let comment: BiliComment
     var replyingTo: BiliComment? = nil
+    var reply:(() -> Void)? = nil
     var body: some View {
         HStack(alignment:.top,spacing:12) {
-            Cover(url:comment.avatar).frame(width:34,height:34).clipShape(Circle())
+            if !comment.mid.isEmpty {
+                NavigationLink { SpaceView(mid:comment.mid,initialName:comment.user) } label: { Cover(url:comment.avatar).frame(width:34,height:34).clipShape(Circle()) }.accessibilityLabel("查看 \(comment.user) 的空间")
+            } else { Cover(url:comment.avatar).frame(width:34,height:34).clipShape(Circle()) }
             VStack(alignment:.leading,spacing:8) {
                 HStack { Text(comment.user).font(.subheadline.weight(.medium)).foregroundStyle(.secondary);Spacer();Label(String(comment.likes),systemImage:"hand.thumbsup").font(.caption).foregroundStyle(.secondary) }
                 if let replyingTo {
@@ -79,7 +84,7 @@ struct CommentRow: View {
                     Text("回复楼内评论").font(.caption).foregroundStyle(.secondary)
                 }
                 CopyableText(text:comment.message).font(.subheadline).fixedSize(horizontal:false,vertical:true)
-                Text(comment.time,style:.date).font(.caption2).foregroundStyle(.tertiary)
+                HStack { Text(comment.time,style:.date).font(.caption2).foregroundStyle(.tertiary);if let reply { Button("回复",action:reply).font(.caption) } }
             }
         }.padding(.vertical,8)
     }
@@ -87,6 +92,7 @@ struct CommentRow: View {
 struct CommentSection: View {
     let oid:String
     @State private var pages = CommentPages()
+    @State private var draft:CommentDraft?
     @AppStorage("commentSort") private var sort = 2
     @AppStorage("commentPreviewCount") private var previewCount = 3
     var body: some View {
@@ -96,9 +102,10 @@ struct CommentSection: View {
                 Spacer()
                 Picker("评论排序",selection:$sort) { Text("最热").tag(2);Text("最新").tag(0) }.pickerStyle(.segmented).frame(width:150)
             }
+            Button("发表评论") { draft = .topLevel }
             ForEach(pages.items) { comment in
                 VStack(alignment:.leading,spacing:4) {
-                    CommentRow(comment:comment)
+                    CommentRow(comment:comment,reply:{ draft = .reply(to:comment) })
                     if comment.replyCount > 0 || !comment.previews.isEmpty {
                         NavigationLink {
                             CommentThreadView(oid:oid,root:comment)
@@ -114,12 +121,14 @@ struct CommentSection: View {
             else if !pages.loading && !pages.end { Button("加载更多评论") { Task { await pages.load(oid:oid,sort:sort) } }.frame(maxWidth:.infinity).padding() }
             else if pages.items.isEmpty && !pages.loading { Text("暂无评论").foregroundStyle(.secondary) }
         }.task(id:"\(oid).\(sort)") { await pages.load(oid:oid,sort:sort,reset:true) }
+            .sheet(item:$draft) { value in CommentComposer(oid:oid,draft:value) { Task { await pages.load(oid:oid,sort:sort,reset:true) } } }
     }
 }
 struct CommentThreadView: View {
     let oid:String
     let root:BiliComment
     @State private var pages:CommentPages
+    @State private var draft:CommentDraft?
     init(oid:String,root:BiliComment,loader:@escaping CommentPages.Fetch = { path,params in try await BiliAPI.shared.request(path,params) }) {
         self.oid = oid;self.root = root;_pages = State(initialValue:CommentPages(fetch:loader))
     }
@@ -132,11 +141,11 @@ struct CommentThreadView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment:.leading,spacing:12) {
-                CommentRow(comment:root)
+                CommentRow(comment:root,reply:{ draft = .reply(to:root) })
                 Divider()
                 Text(showLoaded ? "全部回复 · 已加载 \(pages.items.count) 条":"全部回复 \(max(root.replyCount,pages.total)) 条").font(.headline)
                 ForEach(pages.items) { reply in
-                    CommentRow(comment:reply,replyingTo:reply.parentID != root.id ? loaded[reply.parentID]:nil)
+                    CommentRow(comment:reply,replyingTo:reply.parentID != root.id ? loaded[reply.parentID]:nil,reply:{ draft = .reply(to:reply) })
                     Divider()
                 }
                 if pages.loading { ProgressView("加载回复").frame(maxWidth:.infinity) }
@@ -147,6 +156,7 @@ struct CommentThreadView: View {
         }.navigationTitle("评论回复").navigationBarTitleDisplayMode(.inline)
             .task { if pages.page == 0 { await pages.load(oid:oid,root:root.id) } }
             .refreshable { await pages.load(oid:oid,root:root.id,reset:true) }
+            .sheet(item:$draft) { value in CommentComposer(oid:oid,draft:value) { Task { await pages.load(oid:oid,root:root.id,reset:true) } } }
     }
 }
 

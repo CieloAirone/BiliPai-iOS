@@ -183,6 +183,7 @@ struct VideoDetailView: View {
     @State private var liked = false
     @State private var busy = false
     @State private var coinConfirmation = false
+    @State private var favoritePicker = false
     @State private var speed: Float = PlaybackOptions.speed()
     @AppStorage("danmakuEnabled") private var danmakuEnabled = true
     @State private var descriptionExpanded = UserDefaults.standard.bool(forKey:"expandDescription")
@@ -206,6 +207,7 @@ struct VideoDetailView: View {
                     Button { Task { await action("/x/v2/history/toview/add", ["bvid":video.id]) {} } } label: { Image(systemName: "text.badge.plus") }.accessibilityLabel("稍后再看")
                     ShareLink(item: URL(string: "https://www.bilibili.com/video/\(video.id)")!) { Image(systemName: "square.and.arrow.up") }
                 }.buttonStyle(.borderless).disabled(busy)
+                Button { favoritePicker = true } label: { Label("收藏",systemImage:"star") }.disabled(detail["aid"].string.isEmpty)
                 if !playback.subtitleError.isEmpty { Text(playback.subtitleError).font(.caption).foregroundStyle(.secondary) }
                 Toggle("弹幕", isOn: $danmakuEnabled)
                 Picker("播放速度", selection: $speed) { ForEach([Float(0.5),1,1.25,1.5,2], id: \.self) { Text(String(format: "%g×", $0)).tag($0) } }.pickerStyle(.segmented)
@@ -219,6 +221,7 @@ struct VideoDetailView: View {
             }.padding()
         }.navigationBarTitleDisplayMode(.inline)
         .alert("提示", isPresented: Binding(get: { !message.isEmpty }, set: { if !$0 { message = "" } })) { Button("好") { message = "" } } message: { Text(message) }
+        .sheet(isPresented:$favoritePicker) { FavoritePicker(aid:detail["aid"].string) }
         .confirmationDialog("为视频投 1 枚硬币？", isPresented: $coinConfirmation, titleVisibility: .visible) {
             Button("投 1 枚硬币") { Task { await action("/x/web-interface/coin/add", ["bvid":video.id,"multiply":"1"]) {} } }
         }
