@@ -145,13 +145,17 @@ struct CommentThreadView: View {
                 Divider()
                 Text(showLoaded ? "全部回复 · 已加载 \(pages.items.count) 条":"全部回复 \(max(root.replyCount,pages.total)) 条").font(.headline)
                 ForEach(pages.items) { reply in
-                    CommentRow(comment:reply,replyingTo:reply.parentID != root.id ? loaded[reply.parentID]:nil,reply:{ draft = .reply(to:reply) })
-                    Divider()
+                    VStack(alignment:.leading,spacing:12) {
+                        CommentRow(comment:reply,replyingTo:reply.parentID != root.id ? loaded[reply.parentID]:nil,reply:{ draft = .reply(to:reply) })
+                        Divider()
+                    }
                 }
-                if pages.loading { ProgressView("加载回复").frame(maxWidth:.infinity) }
-                if !pages.error.isEmpty { Text(pages.error).foregroundStyle(.red);Button("重试") { Task { await pages.load(oid:oid,root:root.id) } } }
-                else if !pages.loading && !pages.end { Button("加载更多回复") { Task { await pages.load(oid:oid,root:root.id) } }.frame(maxWidth:.infinity).padding() }
-                else if pages.items.isEmpty && !pages.loading { Text("暂无可见回复").foregroundStyle(.secondary) }
+                VStack(alignment:.leading,spacing:12) {
+                    if pages.loading { ProgressView("加载回复").frame(maxWidth:.infinity) }
+                    if !pages.error.isEmpty { Text(pages.error).foregroundStyle(.red);Button("重试") { Task { await pages.load(oid:oid,root:root.id) } } }
+                    else if !pages.loading && !pages.end { Button("加载更多回复") { Task { await pages.load(oid:oid,root:root.id) } }.frame(maxWidth:.infinity).padding() }
+                    else if pages.items.isEmpty && !pages.loading { Text("暂无可见回复").foregroundStyle(.secondary) }
+                }
             }.padding()
         }.navigationTitle("评论回复").navigationBarTitleDisplayMode(.inline)
             .task { if pages.page == 0 { await pages.load(oid:oid,root:root.id) } }
