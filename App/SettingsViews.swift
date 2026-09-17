@@ -37,7 +37,7 @@ enum SettingCategory: String, CaseIterable, Identifiable {
         case .home:return "卡片 网格 列数 作者 刷新 推荐"
         case .navigation:return "底栏 动态 历史 听视频 动画 触感"
         case .privacy:return "无痕 搜索历史 播放记录 黑名单 权限"
-        case .storage:return "缓存 分享 导入 导出 备份 恢复"
+        case .storage:return "缓存 分享 导入 导出 备份 恢复 WebDAV"
         case .plugins:return "规则 过滤 关键词 推荐"
         case .about:return "版本 更新 许可 日志 源码"
         }
