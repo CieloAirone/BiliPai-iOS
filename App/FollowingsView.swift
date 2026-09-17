@@ -41,7 +41,7 @@ struct FollowingsView:View {
             } else {
                 Section(pages.total > 0 ? "已关注 \(pages.total) 人":"我的关注") {
                     ForEach(pages.items,id:\.followingID) { user in
-                        NavigationLink { WebScreen(url:URL(string:"https://space.bilibili.com/\(user.followingID)")!,title:user["uname"].string) } label: {
+                        NavigationLink { SpaceView(mid:user.followingID,initialName:user["uname"].string) } label: {
                             HStack(spacing:12) {
                                 Cover(url:user["face"].string).frame(width:48,height:48).clipShape(Circle())
                                 VStack(alignment:.leading,spacing:5) {

@@ -194,7 +194,12 @@ struct VideoDetailView: View {
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }
             VStack(alignment: .leading, spacing: 18) {
                 CopyableText(text:video.title).font(.title3.bold())
-                HStack { Text(video.author).foregroundStyle(.secondary); Spacer(); Text(video.id).font(.caption).foregroundStyle(.secondary) }
+                HStack {
+                    if !detail["owner"]["mid"].string.isEmpty {
+                        NavigationLink { SpaceView(mid:detail["owner"]["mid"].string,initialName:detail["owner"]["name"].string) } label: { Text(detail["owner"]["name"].string) }
+                    } else { Text(video.author).foregroundStyle(.secondary) }
+                    Spacer();Text(video.id).font(.caption).foregroundStyle(.secondary)
+                }
                 HStack(spacing: 24) {
                     Button { Task { await action("/x/web-interface/archive/like", ["bvid":video.id,"like":liked ? "2":"1"]) { liked.toggle() } } } label: { Label("点赞", systemImage: liked ? "hand.thumbsup.fill":"hand.thumbsup") }
                     Button { coinConfirmation = true } label: { Label("投币", systemImage: "circle") }

@@ -27,7 +27,7 @@ struct ProfileView: View {
                 NavigationLink { FeedView(mode: "稍后再看").navigationTitle("稍后再看") } label: { Label("稍后再看", systemImage: "text.badge.plus") }
                 NavigationLink { PrivacyGate { FavoritesView() } } label: { Label("我的收藏", systemImage: "star") }
                 if session.loggedIn {
-                    NavigationLink { WebScreen(url: URL(string: "https://space.bilibili.com/\(session.mid)")!, title: "我的空间") } label: { Label("我的空间 · 网页", systemImage: "person.crop.rectangle") }
+                    NavigationLink { SpaceView(mid:session.mid,initialName:session.name) } label: { Label("我的空间", systemImage: "person.crop.rectangle") }
                 }
                 NavigationLink { WebScreen(url: URL(string: "https://message.bilibili.com/")!, title: "消息") } label: { Label("消息 · 网页", systemImage: "envelope") }
             }
