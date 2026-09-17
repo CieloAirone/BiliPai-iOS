@@ -1,4 +1,6 @@
 import Foundation
+import AVFoundation
+import CryptoKit
 
 struct BiliSubtitle:Identifiable {
     let id:String
@@ -8,6 +10,16 @@ struct BiliSubtitle:Identifiable {
     let url:URL?
     var inlineVTT:Data? = nil
 
+    var characteristic:String {
+        "fun.caservice.bilipai.subtitle." + SHA256.hash(data:Data(id.utf8)).prefix(12).map { String(format:"%02x",$0) }.joined()
+    }
+    func mediaLine(path:String,group:String = "subtitles") -> String {
+        "#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"\(group)\",NAME=\"\(Self.attribute(name))\",LANGUAGE=\"\(Self.attribute(language))\",CHARACTERISTICS=\"\(characteristic)\",DEFAULT=NO,AUTOSELECT=NO,FORCED=NO,URI=\"\(path)\""
+    }
+    func option(in group:AVMediaSelectionGroup) -> AVMediaSelectionOption? {
+        // AVFoundation localizes displayName; it is not the server's NAME.
+        group.options.first { $0.hasMediaCharacteristic(AVMediaCharacteristic(rawValue:characteristic)) }
+    }
     static func parse(_ value:JSON) -> BiliSubtitle? {
         var raw = value["subtitle_url"].string.trimmingCharacters(in:.whitespacesAndNewlines)
         if raw.hasPrefix("//") { raw = "https:" + raw }

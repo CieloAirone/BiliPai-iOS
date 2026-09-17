@@ -77,7 +77,7 @@ import MediaPlayer
                 do {
                     if let group = try await asset.loadMediaSelectionGroup(for:.legible) {
                         let preferred = SubtitlePolicy.preferred(subtitles,mode:UserDefaults.standard.string(forKey:"subtitleAuto") ?? "off",muted:player.isMuted || player.volume == 0)
-                        item.select(preferred.flatMap { track in group.options.first(where:{ $0.displayName == track.name }) },in:group)
+                        item.select(preferred.flatMap { $0.option(in:group) },in:group)
                     }
                 } catch { subtitleError = "字幕暂不可用：" + error.localizedDescription }
             }

@@ -147,7 +147,7 @@ final class HLSBridge: @unchecked Sendable {
         }
         for (index,subtitle) in subtitles.enumerated() {
             let path = subtitle.install(index:index,token:token,duration:video.segments.reduce(0) { $0+$1.duration },resources:&map)
-            lines.append("#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"subtitles\",NAME=\"\(BiliSubtitle.attribute(subtitle.name))\",LANGUAGE=\"\(BiliSubtitle.attribute(subtitle.language))\",DEFAULT=NO,AUTOSELECT=NO,FORCED=NO,URI=\"\(path)\"")
+            lines.append(subtitle.mediaLine(path:path))
         }
         let subtitleAttribute = subtitles.isEmpty ? "":",SUBTITLES=\"subtitles\""
         lines.append("#EXT-X-STREAM-INF:BANDWIDTH=\(max(1, video.bandwidth + (audio?.bandwidth ?? 0))),CODECS=\"\(codecs)\"\(audioAttribute)\(subtitleAttribute)")
