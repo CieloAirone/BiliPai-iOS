@@ -7,6 +7,7 @@ struct RegressionFixtureRoot:View {
     var body:some View {
         NavigationStack {
             List {
+                NavigationLink("窄屏分类测试") { HomeCategoryBar(tabs:NavigationOptions.top,selected:"推荐",select:{ _ in }).frame(width:288).padding(.horizontal,16).frame(maxWidth:.infinity).navigationTitle("窄屏分类测试") }
                 NavigationLink("播放器测试") { PlayerRegressionFixture() }
                 NavigationLink("评论测试") { CommentThreadView(oid:"123",root:Self.root,loader:Self.replies) }
             }.navigationTitle("回归测试")
@@ -58,6 +59,17 @@ struct PlayerRegressionFixture:View {
                 try? await Task.sleep(for:.milliseconds(200))
             }
         }
+    }
+}
+enum CatalogFixture {
+    static func request(_ path:String,_ params:[String:String]) async throws -> JSON {
+        if path == "/pgc/season/index/result" {
+            guard params["type"] == "1",params["st"] == "1" else { throw BiliError(message:"请求错误（-400）") }
+            let page = params["page"] ?? "1"
+            return JSON(["has_next":page == "1" ? 1:0,"list":[["season_id":page,"title":"测试番剧 \(page)","index_show":"全 1 话"]]])
+        }
+        if path == "/pgc/view/web/season" { return JSON(["title":"测试番剧详情","evaluate":"详情加载成功","episodes":[["id":100,"cid":200,"title":"1","long_title":"第一话"]]]) }
+        throw BiliError(message:"非预期的测试请求")
     }
 }
 #endif

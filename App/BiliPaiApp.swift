@@ -101,6 +101,7 @@ struct HomeView: View {
     @Environment(Session.self) private var session
     @AppStorage("defaultFeed") private var category = "推荐"
     @AppStorage("topTabs") private var topTabs = "推荐,热门,排行榜,直播,番剧"
+    @State private var catalogRoute:HomeCatalogRoute?
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -110,37 +111,21 @@ struct HomeView: View {
                 }.accessibilityLabel("搜索")
                 NavigationLink { SettingsView() } label: { Image(systemName: "gearshape").frame(width: 36, height: 36) }.accessibilityLabel("设置")
             }.padding(.horizontal)
-            HStack(spacing: 4) {
-                ForEach(NavigationOptions.topItems(topTabs), id: \.self) { tab in
-                    if ["推荐","热门","排行榜"].contains(tab) {
-                        Button { category = tab } label: { HomeCategoryLabel(title:tab,selected:category == tab) }.buttonStyle(.plain)
-                    } else {
-                        NavigationLink { CatalogView(live:tab == "直播") } label: { HomeCategoryLabel(title:tab) }.buttonStyle(.plain)
-                    }
-                }
-            }.padding(.horizontal, 16)
+            HomeCategoryBar(tabs:NavigationOptions.topItems(topTabs),selected:category) { tab in
+                if tab == "直播" { catalogRoute = .live }
+                else if tab == "番剧" { catalogRoute = .bangumi }
+                else { category = tab }
+            }.padding(.horizontal,16)
             FeedView(mode: category).id(category)
         }.toolbar(.hidden, for: .navigationBar)
-    }
-}
-// Every category uses the same typography and equal-width touch target.
-private struct HomeCategoryLabel: View {
-    let title: String
-    var selected = false
-    var body: some View {
-        Text(title)
-            .font(.subheadline.weight(.medium))
-            .tracking(0)
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
-            .foregroundStyle(selected ? Preferences.tint : Color.secondary)
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .background {
-                if selected {
-                    Capsule().fill(Preferences.tint.opacity(0.12)).padding(.vertical, 4)
-                }
+            .navigationDestination(item:$catalogRoute) { route in
+                #if DEBUG
+                if ProcessInfo.processInfo.arguments.contains("--catalog-fixture") { CatalogView(live:route == .live,request:CatalogFixture.request) }
+                else { CatalogView(live:route == .live) }
+                #else
+                CatalogView(live:route == .live)
+                #endif
             }
-            .contentShape(Rectangle())
     }
 }
 struct FeedView: View {

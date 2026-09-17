@@ -3,6 +3,7 @@ import AVKit
 
 struct CatalogView: View {
     let live: Bool
+    var request:(String,[String:String]) async throws -> JSON = { path,params in try await BiliAPI.shared.request(path,params) }
     @State private var items: [JSON] = []
     @State private var page = 0
     @State private var busy = false
@@ -13,30 +14,30 @@ struct CatalogView: View {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 155), spacing: 14)], spacing: 20) {
                 ForEach(items, id: \.catalogID) { item in
                     NavigationLink {
-                        if live { LiveRoomView(room: item) } else { SeasonView(seasonID: item["season_id"].string) }
+                        if live { LiveRoomView(room: item) } else { SeasonView(seasonID: item["season_id"].string,request:request) }
                     } label: {
                         VStack(alignment: .leading, spacing: 8) {
                             Cover(url: item["cover"].string).frame(height: live ? 105:210).clipped().clipShape(RoundedRectangle(cornerRadius: 12))
                             Text(item["title"].string).font(.subheadline.weight(.medium)).lineLimit(2)
                             Text(live ? item["uname"].string : item["index_show"].string).font(.caption).foregroundStyle(.secondary)
                         }
-                    }.buttonStyle(.plain)
+                    }.buttonStyle(.plain).accessibilityIdentifier("catalog.item.\(item.catalogID)")
                 }
             }.padding()
             if busy { ProgressView() }
-            if !error.isEmpty { FailureView(message: error) { Task { await load(reset: true) } } }
-            if !busy && more { Button("加载更多") { Task { await load(reset: false) } }.padding() }
-        }.navigationTitle(live ? "直播":"番剧").task { await load(reset: true) }.refreshable { await load(reset: true) }
+            if !error.isEmpty { FailureView(message: error) { Task { await load(reset: items.isEmpty) } } }
+            if !busy && more && error.isEmpty && !items.isEmpty { Button("加载更多") { Task { await load(reset: false) } }.padding() }
+        }.navigationTitle(live ? "直播":"番剧").task { if items.isEmpty { await load(reset: true) } }.refreshable { await load(reset: true) }
     }
     private func load(reset: Bool) async {
         guard !busy else { return }; busy = true; error = ""; defer { busy = false }
         do {
             let next = reset ? 1 : page + 1
             let result: JSON
-            if live { result = try await BiliAPI.shared.request("https://api.live.bilibili.com/room/v3/area/getRoomList", ["parent_area_id":"0","area_id":"0","page":String(next),"page_size":"30","sort_type":"online"]) }
-            else { result = try await BiliAPI.shared.request("/pgc/season/index/result", ["season_type":"1","st":"1","page":String(next),"pagesize":"20","order":"3","sort":"0"]) }
+            if live { result = try await request("https://api.live.bilibili.com/room/v3/area/getRoomList", ["parent_area_id":"0","area_id":"0","page":String(next),"page_size":"30","sort_type":"online"]) }
+            else { result = try await request("/pgc/season/index/result", CatalogRequest.bangumi(page:next)) }
             let rows = result["list"].array; var seen = Set<String>()
-            items = ((reset ? [] : items) + rows).filter { !$0.catalogID.isEmpty && seen.insert($0.catalogID).inserted }; page = next; more = !rows.isEmpty
+            items = ((reset ? [] : items) + rows).filter { !$0.catalogID.isEmpty && seen.insert($0.catalogID).inserted }; page = next; more = live ? !rows.isEmpty:CatalogRequest.hasNext(result)
         } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
     }
 }
@@ -82,6 +83,7 @@ struct LiveRoomView: View {
 }
 struct SeasonView: View {
     let seasonID: String
+    var request:(String,[String:String]) async throws -> JSON = { path,params in try await BiliAPI.shared.request(path,params) }
     @State private var data = JSON()
     @State private var error = ""
     var body: some View {
@@ -97,7 +99,7 @@ struct SeasonView: View {
             }
             if !error.isEmpty { Text(error).foregroundStyle(.red) }
         }.navigationTitle("番剧详情").navigationBarTitleDisplayMode(.inline).task {
-            do { data = try await BiliAPI.shared.request("/pgc/view/web/season", ["season_id":seasonID]) }
+            do { data = try await request("/pgc/view/web/season", ["season_id":seasonID]) }
             catch { self.error = error.localizedDescription }
         }
     }
