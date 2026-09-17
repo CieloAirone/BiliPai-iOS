@@ -7,6 +7,8 @@ struct RegressionFixtureRoot:View {
     var body:some View {
         NavigationStack {
             List {
+                NavigationLink("空间测试") { SpaceView(mid:"123",request:SpaceFixture.request) }
+                NavigationLink("卡片比例测试") { VideoCardFixture() }
                 NavigationLink("窄屏分类测试") { HomeCategoryBar(tabs:NavigationOptions.top,selected:"推荐",select:{ _ in }).frame(width:288).padding(.horizontal,16).frame(maxWidth:.infinity).navigationTitle("窄屏分类测试") }
                 NavigationLink("播放器测试") { PlayerRegressionFixture() }
                 NavigationLink("评论测试") { CommentThreadView(oid:"123",root:Self.root,loader:Self.replies) }
@@ -70,6 +72,30 @@ enum CatalogFixture {
         }
         if path == "/pgc/view/web/season" { return JSON(["title":"测试番剧详情","evaluate":"详情加载成功","episodes":[["id":100,"cid":200,"title":"1","long_title":"第一话"]]]) }
         throw BiliError(message:"非预期的测试请求")
+    }
+}
+enum SpaceFixture {
+    static func request(_ path:String,_ params:[String:String],_ signed:Bool) async throws -> JSON {
+        switch path {
+        case "/x/space/wbi/acc/info":return JSON(["name":"测试 UP 主","sign":"空间资料加载成功"])
+        case "/x/relation/stat":return JSON(["following":12,"follower":34])
+        case "/x/space/wbi/arc/search":return JSON(["list":["vlist":[["bvid":"BVfixture","title":"空间投稿测试","length":"12:34"]]],"page":["count":1]])
+        case "/x/polymer/web-dynamic/v1/feed/space":return JSON(["items":[["id_str":"1","modules":["module_author":["name":"测试 UP 主"],"module_dynamic":["desc":["text":"空间动态加载成功"]]]]],"has_more":0])
+        default:throw BiliError(message:"非预期空间请求")
+        }
+    }
+}
+struct VideoCardFixture:View {
+    @AppStorage("coverRatio") private var ratio = "16:10"
+    var body:some View {
+        VStack {
+            Picker("封面比例",selection:$ratio) { ForEach(["16:9","4:3","16:10"],id:\.self) { Text($0).tag($0) } }.pickerStyle(.segmented)
+            HStack(alignment:.top,spacing:14) {
+                VideoCard(video:Video(JSON(["bvid":"1","title":"用于检查两列卡片标题、时长和封面尺寸","author":"测试作者","duration":125,"play":10000])))
+                VideoCard(video:Video(JSON(["bvid":"2","title":"短标题","author":"测试作者","duration":3661,"play":200])))
+            }
+            Spacer()
+        }.padding().navigationTitle("卡片比例测试")
     }
 }
 #endif

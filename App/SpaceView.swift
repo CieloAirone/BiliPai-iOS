@@ -46,7 +46,12 @@ import SwiftUI
 
 struct SpaceView:View {
     let mid:String
-    var initialName = "UP 主空间"
+    let initialName:String
+    private let request:SpacePages.Fetch
+    init(mid:String,initialName:String = "UP 主空间",request:@escaping SpacePages.Fetch = { path,params,signed in try await BiliAPI.shared.request(path,params,signed:signed) }) {
+        self.mid = mid;self.initialName = initialName;self.request = request
+        _pages = State(initialValue:SpacePages(fetch:request))
+    }
     @Environment(Session.self) private var session
     @State private var profile = JSON()
     @State private var stats = JSON()
@@ -110,10 +115,10 @@ struct SpaceView:View {
     private func loadProfile() async {
         profileError = ""
         do {
-            let data = try await BiliAPI.shared.request("/x/space/wbi/acc/info",["mid":mid],signed:true)
+            let data = try await request("/x/space/wbi/acc/info",["mid":mid],true)
             try Task.checkCancellation();profile = data
         } catch { if !Task.isCancelled { profileError = error.localizedDescription } }
-        do { let data = try await BiliAPI.shared.request("/x/relation/stat",["vmid":mid]);try Task.checkCancellation();stats = data }
+        do { let data = try await request("/x/relation/stat",["vmid":mid],false);try Task.checkCancellation();stats = data }
         catch { if !Task.isCancelled { profileError += "\n"+error.localizedDescription } }
         await loadRelation()
     }
@@ -122,7 +127,7 @@ struct SpaceView:View {
         guard session.loggedIn,mid != session.mid else { return }
         let account = session.mid
         do {
-            let data = try await BiliAPI.shared.request("/x/relation",["fid":mid])
+            let data = try await request("/x/relation",["fid":mid],false)
             try Task.checkCancellation();guard session.mid == account else { return }
             following = [2,6].contains(data["attribute"].int)
         } catch { if !Task.isCancelled && session.mid == account { relationError = error.localizedDescription } }
