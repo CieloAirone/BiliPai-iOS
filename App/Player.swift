@@ -89,7 +89,7 @@ struct NativePlayer: UIViewControllerRepresentable {
     let player: AVPlayer
     var onRelease: () -> Void = {}
 
-    final class Coordinator: NSObject, AVPlayerViewControllerDelegate {
+    @MainActor final class Coordinator: NSObject, AVPlayerViewControllerDelegate {
         var token: NSObjectProtocol?
         var background = true
         let lifetime: PlayerControllerLifetime
