@@ -66,6 +66,15 @@ actor DanmakuStore {
     }
 }
 struct DanmakuOverlay: View {
+    @AppStorage("dmOpacity") private var opacity = 1.0
+    @AppStorage("dmFontSize") private var fontSize = 15.0
+    @AppStorage("dmDuration") private var duration = 7.0
+    @AppStorage("dmLimit") private var limit = 36
+    @AppStorage("dmArea") private var area = 1.0
+    @AppStorage("dmScroll") private var scroll = true
+    @AppStorage("dmTop") private var top = true
+    @AppStorage("dmBottom") private var bottom = true
+    @AppStorage("dmKeywords") private var keywords = ""
     let player: AVPlayer
     let cid: String
     @State private var items: [Danmaku] = []
@@ -83,26 +92,29 @@ struct DanmakuOverlay: View {
                     let mid = (low + high) / 2
                     if items[mid].time <= current { low = mid + 1 } else { high = mid }
                 }
-                let active = items[max(0, low - 36)..<low].filter { current - $0.time < 7 }
+                let active = items[max(0, low - limit)..<low].filter { current - $0.time < duration }
                 var occupied = Set<Int>()
                 for item in active {
-                    let lane = abs(item.id % 6)
+                    if Preferences.lines(keywords).contains(where:item.text.localizedCaseInsensitiveContains) { continue }
+                    if item.mode == 4 && !bottom || item.mode == 5 && !top || [1,2,3,6].contains(item.mode) && !scroll { continue }
+                    let rows = max(1,Int((size.height * area - 40) / (fontSize + 9)))
+                    let lane = abs(item.id % rows)
                     let slot = lane * 100000 + Int(item.time / 2)
                     guard occupied.insert(slot).inserted else { continue }
                     let color = Color(red: Double((item.color >> 16) & 255)/255, green: Double((item.color >> 8) & 255)/255, blue: Double(item.color & 255)/255)
-                    let text = Text(item.text).font(.system(size: 15, weight: .semibold)).foregroundColor(color)
+                    let text = Text(item.text).font(.system(size: fontSize, weight: .semibold)).foregroundColor(color)
                     let resolved = context.resolve(text)
                     let width = resolved.measure(in: CGSize(width: 1600, height: 30)).width
-                    let progress = (current - item.time) / 7
+                    let progress = (current - item.time) / duration
                     var x = size.width - progress * (size.width + width)
-                    var y = CGFloat(lane) * 24 + 20
-                    if item.mode == 4 { x = (size.width - width)/2; y = size.height - 40 - CGFloat(lane % 2) * 24 }
+                    var y = CGFloat(lane) * (fontSize + 9) + 20
+                    if item.mode == 4 { x = (size.width - width)/2; y = size.height * area - 40 - CGFloat(lane % 2) * 24 }
                     if item.mode == 5 { x = (size.width - width)/2; y = 20 + CGFloat(lane % 2) * 24 }
                     if item.mode == 6 { x = -width + progress * (size.width + width) }
                     var shadow = context; shadow.addFilter(.shadow(color: .black.opacity(0.9), radius: 1)); shadow.draw(resolved, at: CGPoint(x: x, y: y), anchor: .topLeading)
                 }
             }
-        }.clipped().allowsHitTesting(false).accessibilityHidden(true)
+        }.opacity(opacity).clipped().allowsHitTesting(false).accessibilityHidden(true)
         .overlay(alignment: .topTrailing) { if !failure.isEmpty { Text("弹幕暂不可用").font(.caption2).padding(4).background(.black.opacity(0.5)).foregroundStyle(.white) } }
         .task(id: cid) {
             items = []; segmentIndex = 0

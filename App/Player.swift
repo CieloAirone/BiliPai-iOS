@@ -15,14 +15,15 @@ import MediaPlayer
         do {
             let data: JSON
             if let episodeID {
-                data = try await BiliAPI.shared.request("/pgc/player/web/playurl", ["ep_id":episodeID,"cid":cid,"qn":"80","fnval":"4048","fourk":"1"])
+                data = try await BiliAPI.shared.request("/pgc/player/web/playurl", ["ep_id":episodeID,"cid":cid,"qn":String(UserDefaults.standard.integer(forKey:"quality") == 0 ? 80 : UserDefaults.standard.integer(forKey:"quality")),"fnval":"4048","fourk":"1"])
             } else {
-                data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":"80","fnval":"4048","fnver":"0","fourk":"1"], signed: true)
+                data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":String(UserDefaults.standard.integer(forKey:"quality") == 0 ? 80 : UserDefaults.standard.integer(forKey:"quality")),"fnval":"4048","fnver":"0","fourk":"1"], signed: true)
             }
             let url: URL
             bridge?.stop(); bridge = nil
             let dashVideos = data["dash"]["video"].array.filter { $0["codecs"].string.hasPrefix("avc1") }.sorted { $0["id"].int > $1["id"].int }
-            if let selected = dashVideos.first {
+            let preferred = UserDefaults.standard.integer(forKey:"quality")
+            if let selected = dashVideos.first(where: { $0["id"].int <= preferred }) ?? dashVideos.last {
                 async let videoTrack = DASHTrack.load(selected)
                 let selectedAudio = data["dash"]["audio"].array.filter { $0["codecs"].string.hasPrefix("mp4a") }.max { $0["bandwidth"].int < $1["bandwidth"].int }
                 let audioTrack: DASHTrack?
@@ -45,25 +46,39 @@ import MediaPlayer
             }
             player.replaceCurrentItem(with: item)
             let saved = UserDefaults.standard.double(forKey: "position.\(bvid).\(cid)")
-            if saved > 0 { await player.seek(to: CMTime(seconds: saved, preferredTimescale: 600)) }
-            player.play()
+            if saved > 0 && UserDefaults.standard.bool(forKey:"rememberPosition") && !UserDefaults.standard.bool(forKey:"privacyMode") { await player.seek(to: CMTime(seconds: saved, preferredTimescale: 600)) }
+            if UserDefaults.standard.bool(forKey:"autoplay") { player.playImmediately(atRate:Float(UserDefaults.standard.double(forKey:"defaultSpeed"))) }
         } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
     }
     func stop(bvid: String, cid: String) {
         let time = player.currentTime().seconds
-        if time.isFinite { UserDefaults.standard.set(time, forKey: "position.\(bvid).\(cid)") }
+        if time.isFinite && UserDefaults.standard.bool(forKey:"rememberPosition") && !UserDefaults.standard.bool(forKey:"privacyMode") { UserDefaults.standard.set(time, forKey: "position.\(bvid).\(cid)") }
         player.pause(); player.replaceCurrentItem(with: nil); status = nil; bridge?.stop(); bridge = nil
     }
 }
 struct NativePlayer: UIViewControllerRepresentable {
+    @AppStorage("pip") private var pip = true
+    @AppStorage("backgroundPlayback") private var background = true
+    final class Coordinator {
+        var token: NSObjectProtocol?
+        var background = true
+        init(player:AVPlayer) {
+            token = NotificationCenter.default.addObserver(forName:UIApplication.didEnterBackgroundNotification,object:nil,queue:.main) { [weak self, weak player] _ in
+                if self?.background == false { player?.pause() }
+            }
+        }
+        deinit { if let token { NotificationCenter.default.removeObserver(token) } }
+    }
+    func makeCoordinator() -> Coordinator { Coordinator(player:player) }
     let player: AVPlayer
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let vc = AVPlayerViewController(); vc.player = player
-        vc.allowsPictureInPicturePlayback = true; vc.canStartPictureInPictureAutomaticallyFromInline = true
+        vc.allowsPictureInPicturePlayback = pip; vc.canStartPictureInPictureAutomaticallyFromInline = pip
+        context.coordinator.background = background
         vc.updatesNowPlayingInfoCenter = true
         return vc
     }
-    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) { uiViewController.player = player }
+    func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) { uiViewController.player = player; uiViewController.allowsPictureInPicturePlayback = pip; uiViewController.canStartPictureInPictureAutomaticallyFromInline = pip; context.coordinator.background = background }
 }
 struct VideoDetailView: View {
     let video: Video
@@ -75,7 +90,7 @@ struct VideoDetailView: View {
     @State private var liked = false
     @State private var busy = false
     @State private var coinConfirmation = false
-    @State private var speed: Float = 1
+    @State private var speed: Float = Float(UserDefaults.standard.double(forKey:"defaultSpeed"))
     @AppStorage("danmakuEnabled") private var danmakuEnabled = true
     var body: some View {
         ScrollView {

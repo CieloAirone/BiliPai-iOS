@@ -1,25 +1,37 @@
 import SwiftUI
 
 @main struct BiliPaiApp: App {
+    init() { Preferences.register() }
     @State private var session = Session()
+    @AppStorage("accent") private var accent = "blue"
+    @AppStorage("fontScale") private var fontScale = 1.0
+    @AppStorage("reduceMotion") private var reduceMotion = false
     @AppStorage("appearance") private var appearance = "system"
     var body: some Scene {
         WindowGroup {
-            RootView().environment(session).tint(.blue)
+            RootView().environment(session).tint(Preferences.tint)
+                .environment(\.dynamicTypeSize, fontScale < 0.95 ? .small : fontScale < 1.05 ? .large : fontScale < 1.2 ? .xLarge : .xxxLarge)
+                .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
+                .onChange(of: accent) { _, _ in }
                 .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
                 .task { await session.refresh() }
         }
     }
 }
 struct RootView: View {
+    @AppStorage("showDynamicTab") private var dynamic = true
+    @AppStorage("showHistoryTab") private var history = true
+    @AppStorage("showListenTab") private var listen = true
+    @AppStorage("haptics") private var haptics = true
+    @State private var tab = 0
     var body: some View {
-        TabView {
-            NavigationStack { HomeView() }.tabItem { Label("推荐", systemImage: "house.fill") }
-            NavigationStack { DynamicView() }.tabItem { Label("动态", systemImage: "bolt.horizontal.circle") }
-            NavigationStack { HistoryView() }.tabItem { Label("历史", systemImage: "clock.arrow.circlepath") }
-            NavigationStack { ListenView() }.tabItem { Label("听视频", systemImage: "headphones") }
-            NavigationStack { ProfileView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }
-        }
+        TabView(selection:$tab) {
+            NavigationStack { HomeView() }.tabItem { Label("推荐", systemImage: "house.fill") }.tag(0)
+            if dynamic { NavigationStack { DynamicView() }.tabItem { Label("动态", systemImage: "bolt.horizontal.circle") }.tag(1) }
+            if history { NavigationStack { HistoryView() }.tabItem { Label("历史", systemImage: "clock.arrow.circlepath") }.tag(2) }
+            if listen { NavigationStack { ListenView() }.tabItem { Label("听视频", systemImage: "headphones") }.tag(3) }
+            NavigationStack { ProfileView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }.tag(4)
+        }.onChange(of: tab) { _, _ in if haptics { UISelectionFeedbackGenerator().selectionChanged() } }
     }
 }
 struct FailureView: View {
@@ -39,26 +51,35 @@ struct Cover: View {
     }
 }
 struct VideoCard: View {
+    @AppStorage("showAuthor") private var showAuthor = true
     let video: Video
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Cover(url: video.cover).frame(height: 108).clipped().clipShape(RoundedRectangle(cornerRadius: 12))
             Text(video.title).font(.subheadline.weight(.medium)).lineLimit(2).frame(height: 40, alignment: .topLeading)
-            Text(video.author).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+            if showAuthor { Text(video.author).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
         }.contentShape(Rectangle())
     }
 }
 struct VideoGrid: View {
+    @AppStorage("gridColumns") private var columns = 0
+    @AppStorage("cardWidth") private var width = 155.0
+    @AppStorage("filterEnabled") private var filtering = false
+    @AppStorage("filterKeywords") private var keywords = ""
+    @AppStorage("blockedAuthors") private var authors = ""
+    private var visible: [Video] {
+        videos.filter { !Preferences.lines(authors).contains($0.author) && (!filtering || !Preferences.lines(keywords).contains(where:$0.title.localizedCaseInsensitiveContains)) }
+    }
     let videos: [Video]
     var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 155), spacing: 14)], spacing: 22) {
-            ForEach(videos) { video in NavigationLink { VideoDetailView(video: video) } label: { VideoCard(video: video) }.buttonStyle(.plain) }
+        LazyVGrid(columns: columns == 0 ? [GridItem(.adaptive(minimum: width), spacing: 14)] : Array(repeating:GridItem(.flexible(),spacing:14),count:columns), spacing: 22) {
+            ForEach(visible) { video in NavigationLink { VideoDetailView(video: video) } label: { VideoCard(video: video) }.buttonStyle(.plain) }
         }.padding()
     }
 }
 struct HomeView: View {
     @Environment(Session.self) private var session
-    @State private var category = "推荐"
+    @AppStorage("defaultFeed") private var category = "推荐"
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -82,6 +103,8 @@ struct HomeView: View {
     }
 }
 struct FeedView: View {
+    @AppStorage("heroCard") private var hero = true
+    @AppStorage("feedCount") private var count = 20
     let mode: String
     @State private var videos: [Video] = []
     @State private var error = ""
@@ -91,13 +114,13 @@ struct FeedView: View {
     var body: some View {
         ScrollView {
             if videos.isEmpty && !error.isEmpty { FailureView(message: error) { Task { await load(reset: true) } } }
-            if mode == "推荐", let first = videos.first {
+            if mode == "推荐" && hero, let first = videos.first(where: { Preferences.accepts($0) }) {
                 NavigationLink { VideoDetailView(video: first) } label: {
                     Cover(url: first.cover).frame(height: 210).clipped()
                         .overlay(alignment: .bottomLeading) { Text(first.title).font(.headline).foregroundStyle(.white).lineLimit(2).padding().frame(maxWidth: .infinity, alignment: .leading).background(.linearGradient(colors: [.clear,.black.opacity(0.8)], startPoint: .top, endPoint: .bottom)) }
                         .clipShape(RoundedRectangle(cornerRadius: 16)).padding(.horizontal)
                 }.buttonStyle(.plain)
-                VideoGrid(videos: Array(videos.dropFirst()))
+                VideoGrid(videos: videos.filter { $0.id != first.id })
             } else { VideoGrid(videos: videos) }
             if loading { ProgressView().padding() }
             else if !ended && !videos.isEmpty { Button("加载更多") { Task { await load(reset: false) } }.padding() }
@@ -109,10 +132,10 @@ struct FeedView: View {
         let next = reset ? 1 : page + 1
         do {
             let data: JSON
-            if mode == "推荐" { data = try await BiliAPI.shared.request("/x/web-interface/wbi/index/top/feed/rcmd", ["ps":"20","fresh_idx":String(next),"fresh_type":"3"], signed: true) }
+            if mode == "推荐" { data = try await BiliAPI.shared.request("/x/web-interface/wbi/index/top/feed/rcmd", ["ps":String(count),"fresh_idx":String(next),"fresh_type":"3"], signed: true) }
             else if mode == "排行榜" { data = try await BiliAPI.shared.request("/x/web-interface/ranking/v2", ["rid":"0","type":"all"]) }
             else if mode == "稍后再看" { data = try await BiliAPI.shared.request("/x/v2/history/toview") }
-            else { data = try await BiliAPI.shared.request("/x/web-interface/popular", ["pn":String(next),"ps":"20"]) }
+            else { data = try await BiliAPI.shared.request("/x/web-interface/popular", ["pn":String(next),"ps":String(count)]) }
             let items = (mode == "推荐" ? data["item"] : data["list"]).array.map(Video.init).filter { !$0.id.isEmpty }
             var seen = Set<String>(); videos = ((reset ? [] : videos) + items).filter { seen.insert($0.id).inserted }
             page = next; ended = items.isEmpty || ["排行榜","稍后再看"].contains(mode)
@@ -120,6 +143,7 @@ struct FeedView: View {
     }
 }
 struct SearchView: View {
+    @AppStorage("privacyMode") private var privacy = false
     @State private var text = ""
     @State private var query = ""
     @State private var videos: [Video] = []
@@ -128,7 +152,7 @@ struct SearchView: View {
     @State private var page = 1
     @State private var end = false
     @AppStorage("searchHistory") private var historyData = "[]"
-    private var history: [String] { (try? JSONDecoder().decode([String].self, from: Data(historyData.utf8))) ?? [] }
+    private var history: [String] { if privacy { return [] }; return (try? JSONDecoder().decode([String].self, from: Data(historyData.utf8))) ?? [] }
     var body: some View {
         ScrollView {
             if query.isEmpty {
@@ -157,7 +181,7 @@ struct SearchView: View {
             try Task.checkCancellation()
             let items = result["result"].array.map(Video.init).filter { !$0.id.isEmpty }
             var seen = Set<String>(); videos = (videos + items).filter { seen.insert($0.id).inserted }; page = p; end = items.isEmpty
-            let saved = [query] + history.filter { $0 != query }; historyData = String(data: try JSONEncoder().encode(Array(saved.prefix(20))), encoding: .utf8) ?? "[]"
+            if !privacy { let saved = [query] + history.filter { $0 != query }; historyData = String(data: try JSONEncoder().encode(Array(saved.prefix(20))), encoding: .utf8) ?? "[]" }
         } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
     }
 }

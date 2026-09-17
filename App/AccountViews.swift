@@ -146,17 +146,3 @@ struct FavoriteVideosView: View {
         } catch { self.error = error.localizedDescription }
     }
 }
-struct SettingsView: View {
-    @AppStorage("appearance") private var appearance = "system"
-    var body: some View {
-        Form {
-            Section("外观") { Picker("主题", selection: $appearance) { Text("跟随系统").tag("system"); Text("浅色").tag("light"); Text("深色").tag("dark") } }
-            Section("关于") {
-                LabeledContent("版本", value: "0.1.0 · 移植预览")
-                Link("BiliPai Android 原项目", destination: URL(string: "https://github.com/jay3-yy/BiliPai")!)
-                Link("iOS 源码与功能进度", destination: URL(string: "https://github.com/CieloAirone/BiliPai-iOS")!)
-                Text("基于 BiliPai 源码移植，非原作者官方 iOS 发行版。原代码许可证随源代码提供。本软件不提供任何担保。").font(.footnote).foregroundStyle(.secondary)
-            }
-        }.navigationTitle("设置")
-    }
-}
