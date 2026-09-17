@@ -313,13 +313,18 @@ struct AboutPreferences: View {
 }
 
 struct CommentPreferences:View {
+    @AppStorage("subtitleAuto") private var subtitleAuto = "off"
     @AppStorage("commentSort") private var sort = 2
     @AppStorage("commentPreviewCount") private var previewCount = 3
     @AppStorage("showReplyLoadedCount") private var loadedCount = true
     @AppStorage("expandDescription") private var expanded = false
     var body:some View {
         Form {
-            Section("内容预览") { Toggle("默认展开视频简介",isOn:$expanded) }
+            Section("内容预览") {
+                Toggle("默认展开视频简介",isOn:$expanded)
+                Picker("自动启用字幕",selection:$subtitleAuto) { Text("关闭").tag("off");Text("开启").tag("on");Text("仅非 AI 字幕").tag("withoutAI");Text("自动").tag("auto") }
+                Text("新视频优先选择中文字幕。自动模式在播放器静音时允许 AI 字幕；播放中可在原生播放器的字幕菜单切换。").font(.caption).foregroundStyle(.secondary)
+            }
             Section("互动与评论") {
                 Picker("评论排序",selection:$sort) { Text("最热").tag(2);Text("最新").tag(0) }
                 Picker("评论回复预览",selection:$previewCount) { ForEach([3,5,8,10],id:\.self) { Text("\($0)条").tag($0) } }

@@ -63,6 +63,7 @@ struct HLSResource {
     var remote: URL?
     var range: ByteSpan?
     var mime: String
+    var subtitleURL:URL? = nil
 }
 struct DASHTrack {
     let url: URL
@@ -132,7 +133,7 @@ final class HLSBridge: @unchecked Sendable {
     init(resources: [String: HLSResource], token: String) {
         self.resources = resources; self.token = token
     }
-    init(video: DASHTrack, audio: DASHTrack?) {
+    init(video: DASHTrack, audio: DASHTrack?, subtitles:[BiliSubtitle] = []) {
         token = UUID().uuidString
         var map: [String: HLSResource] = [:]
         let videoPath = video.install(name: "video", token: token, resources: &map)
@@ -144,7 +145,12 @@ final class HLSBridge: @unchecked Sendable {
             lines.append("#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID=\"audio\",NAME=\"Audio\",DEFAULT=YES,AUTOSELECT=YES,URI=\"\(path)\"")
             audioAttribute = ",AUDIO=\"audio\""; codecs += "," + audio.codecs
         }
-        lines.append("#EXT-X-STREAM-INF:BANDWIDTH=\(max(1, video.bandwidth + (audio?.bandwidth ?? 0))),CODECS=\"\(codecs)\"\(audioAttribute)")
+        for (index,subtitle) in subtitles.enumerated() {
+            let path = subtitle.install(index:index,token:token,duration:video.segments.reduce(0) { $0+$1.duration },resources:&map)
+            lines.append("#EXT-X-MEDIA:TYPE=SUBTITLES,GROUP-ID=\"subtitles\",NAME=\"\(BiliSubtitle.attribute(subtitle.name))\",LANGUAGE=\"\(BiliSubtitle.attribute(subtitle.language))\",DEFAULT=NO,AUTOSELECT=NO,FORCED=NO,URI=\"\(path)\"")
+        }
+        let subtitleAttribute = subtitles.isEmpty ? "":",SUBTITLES=\"subtitles\""
+        lines.append("#EXT-X-STREAM-INF:BANDWIDTH=\(max(1, video.bandwidth + (audio?.bandwidth ?? 0))),CODECS=\"\(codecs)\"\(audioAttribute)\(subtitleAttribute)")
         lines.append(videoPath)
         map["/\(token)/master.m3u8"] = HLSResource(data: Data(lines.joined(separator: "\n").utf8), mime: "application/vnd.apple.mpegurl")
         resources = map
@@ -203,6 +209,7 @@ final class HLSBridge: @unchecked Sendable {
                 do {
                     let data: Data
                     if let inline = resource.data { data = inline }
+                    else if let url = resource.subtitleURL { data = try await SubtitleService.vtt(url:url) }
                     else if let url = resource.remote, let range = resource.range { data = try await MediaFetch.bytes(url: url, range: range) }
                     else { throw URLError(.badURL) }
                     self?.queue.async { self?.respond(connection, id: id, status: 200, data: data, mime: resource.mime, head: head) }

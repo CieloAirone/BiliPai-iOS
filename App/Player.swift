@@ -5,6 +5,7 @@ import MediaPlayer
 @MainActor @Observable final class Playback {
     let player = AVPlayer()
     var error = ""
+    var subtitleError = ""
     var loading = false
     var title = ""
     var bridge: HLSBridge?
@@ -16,7 +17,7 @@ import MediaPlayer
     func open(bvid: String, cid: String, title: String, episodeID: String? = nil) async {
         let requestedID = "\(bvid).\(cid).\(episodeID ?? "")"
         if playbackID == requestedID && player.currentItem != nil { return }
-        loading = true; error = ""; self.title = title
+        loading = true; error = ""; subtitleError = ""; self.title = title
         defer { loading = false }
         do {
             let data: JSON
@@ -26,6 +27,9 @@ import MediaPlayer
             } else {
                 data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":String(preferred),"fnval":"4048","fnver":"0","fourk":"1"], signed: true)
             }
+            var subtitles:[BiliSubtitle] = []
+            do { subtitles = try await SubtitleService.tracks(bvid:bvid,cid:cid) }
+            catch { if !Task.isCancelled { subtitleError = "字幕暂不可用：" + error.localizedDescription } }
             let url: URL
             bridge?.stop(); bridge = nil
             let dashVideos = data["dash"]["video"].array.filter { $0["codecs"].string.hasPrefix("avc1") }.sorted { $0["id"].int > $1["id"].int }
@@ -36,7 +40,7 @@ import MediaPlayer
                 let selectedAudio = audioChoices.first(where: { $0["id"].int <= audioQuality }) ?? audioChoices.last
                 let audioTrack: DASHTrack?
                 if let selectedAudio { audioTrack = try await DASHTrack.load(selectedAudio) } else { audioTrack = nil }
-                let localBridge = HLSBridge(video: try await videoTrack, audio: audioTrack)
+                let localBridge = HLSBridge(video: try await videoTrack, audio: audioTrack, subtitles:subtitles)
                 bridge = localBridge; url = try await localBridge.start()
             } else if data["durl"].array.count == 1, let source = data["durl"].array.first,
                       let sourceURL = URL(string: source["url"].string.replacingOccurrences(of: "http://", with: "https://")) {
@@ -67,6 +71,15 @@ import MediaPlayer
             }
             player.replaceCurrentItem(with: item)
             playbackID = requestedID
+            player.appliesMediaSelectionCriteriaAutomatically = false
+            if !subtitles.isEmpty,bridge != nil {
+                do {
+                    if let group = try await asset.loadMediaSelectionGroup(for:.legible) {
+                        let preferred = SubtitlePolicy.preferred(subtitles,mode:UserDefaults.standard.string(forKey:"subtitleAuto") ?? "off",muted:player.isMuted || player.volume == 0)
+                        item.select(preferred.flatMap { track in group.options.first(where:{ $0.displayName == track.name }) },in:group)
+                    }
+                } catch { subtitleError = "字幕暂不可用：" + error.localizedDescription }
+            }
             let saved = UserDefaults.standard.double(forKey: "position.\(bvid).\(cid)")
             if saved > 0 && UserDefaults.standard.bool(forKey:"rememberPosition") && !UserDefaults.standard.bool(forKey:"privacyMode") { await player.seek(to: CMTime(seconds: saved, preferredTimescale: 600)) }
             if UserDefaults.standard.bool(forKey:"autoplay") { player.playImmediately(atRate:PlaybackOptions.speed()) }
@@ -185,6 +198,7 @@ struct VideoDetailView: View {
                     Button { Task { await action("/x/v2/history/toview/add", ["bvid":video.id]) {} } } label: { Image(systemName: "text.badge.plus") }.accessibilityLabel("稍后再看")
                     ShareLink(item: URL(string: "https://www.bilibili.com/video/\(video.id)")!) { Image(systemName: "square.and.arrow.up") }
                 }.buttonStyle(.borderless).disabled(busy)
+                if !playback.subtitleError.isEmpty { Text(playback.subtitleError).font(.caption).foregroundStyle(.secondary) }
                 Toggle("弹幕", isOn: $danmakuEnabled)
                 Picker("播放速度", selection: $speed) { ForEach([Float(0.5),1,1.25,1.5,2], id: \.self) { Text(String(format: "%g×", $0)).tag($0) } }.pickerStyle(.segmented)
                     .onChange(of: speed) { _, value in playback.player.rate = value }
