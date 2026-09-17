@@ -5,7 +5,7 @@ import CoreFoundation
 // Only settings with a runtime consumer belong in this allowlist.
 enum Preferences {
     static let defaults: [String: Any] = [
-        "subtitleAuto":"off", "showReplyLoadedCount":true, "incrementalDynamicRefresh":false, "dynamicLayout":"list", "autoHighestQuality":false, "mobileQuality":64, "audioQuality":30280, "dataSaver":"off",
+        "autoFullscreen":false, "subtitleAuto":"off", "showReplyLoadedCount":true, "incrementalDynamicRefresh":false, "dynamicLayout":"list", "autoHighestQuality":false, "mobileQuality":64, "audioQuality":30280, "dataSaver":"off",
         "rememberSpeed":false, "lastSpeed":1.0, "audioFocus":true, "completion":"auto",
         "expandDescription":false, "copyText":false, "customAccent":"007AFF",
         "topTabs":"推荐,热门,排行榜,直播,番剧", "bottomOrder":"0,1,2,3,4",

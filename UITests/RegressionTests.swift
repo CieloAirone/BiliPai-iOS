@@ -1,5 +1,21 @@
 import XCTest
 final class RegressionTests:XCTestCase {
+    func testAutomaticFullscreenAndReturnWithoutReopening() {
+        let app = XCUIApplication();app.launchArguments = ["--regression-fixtures","-autoFullscreen","YES"];app.launch()
+        app.buttons["播放器测试"].tap()
+        let close = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'done' OR label CONTAINS[c] 'close' OR label == '完成'")).firstMatch
+        if !close.waitForExistence(timeout:5) { app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap() }
+        XCTAssertTrue(close.waitForExistence(timeout:5),app.debugDescription)
+        let shot = XCTAttachment(screenshot:app.screenshot());shot.name = "AutomaticFullscreen";shot.lifetime = .keepAlways;add(shot)
+        close.tap()
+        XCTAssertTrue(app.staticTexts["媒体仍加载"].waitForExistence(timeout:5))
+        let frames = app.staticTexts["fixture.frames"]
+        let before = Int(frames.label) ?? 0
+        let advancing = NSPredicate { _,_ in (Int(frames.label) ?? 0) > before+5 }
+        XCTAssertEqual(XCTWaiter.wait(for:[XCTNSPredicateExpectation(predicate:advancing,object:nil)],timeout:10),.completed)
+        XCTAssertTrue(app.navigationBars["播放器测试"].exists)
+    }
+
     func testNativeFullscreenKeepsVideoFramesAndReturnsInline() {
         let app = XCUIApplication();app.launchArguments = ["--regression-fixtures"];app.launch()
         app.buttons["播放器测试"].tap()

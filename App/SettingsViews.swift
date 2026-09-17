@@ -126,6 +126,7 @@ struct SliderRow: View {
     var body: some View { VStack(alignment:.leading) { HStack { Text(title);Spacer();Text(String(format:"%.1f",value)+suffix).foregroundStyle(.secondary).monospacedDigit() };Slider(value:$value,in:range,step:step).accessibilityLabel(title) } }
 }
 struct PlaybackPreferences: View {
+    @AppStorage("autoFullscreen") private var autoFullscreen = false
     @AppStorage("autoHighestQuality") private var highest = false
     @AppStorage("mobileQuality") private var mobileQuality = 64
     @AppStorage("audioQuality") private var audioQuality = 30280
@@ -142,6 +143,8 @@ struct PlaybackPreferences: View {
     var body: some View {
         Form {
             Section("播放行为") {
+                Toggle("进入视频自动全屏播放",isOn:$autoFullscreen).accessibilityIdentifier("settings.autoFullscreen")
+                Text("开启后进入视频会自动播放并全屏；手动退出全屏后不会再次自动弹出。听视频不受影响。").font(.caption).foregroundStyle(.secondary)
                 Toggle("进入视频自动播放",isOn:$autoplay).accessibilityIdentifier("settings.autoplay")
                 Toggle("记忆播放进度",isOn:$remember)
                 Toggle("记忆上次播放速度",isOn:$rememberSpeed)

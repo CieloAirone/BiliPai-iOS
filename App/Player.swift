@@ -85,7 +85,7 @@ import MediaPlayer
             guard player.currentItem === item else { return }
             let saved = UserDefaults.standard.double(forKey: "position.\(bvid).\(cid)")
             if saved > 0 && UserDefaults.standard.bool(forKey:"rememberPosition") && !UserDefaults.standard.bool(forKey:"privacyMode") { await player.seek(to: CMTime(seconds: saved, preferredTimescale: 600)) }
-            if UserDefaults.standard.bool(forKey:"autoplay") { player.playImmediately(atRate:PlaybackOptions.speed()) }
+            if UserDefaults.standard.bool(forKey:"autoplay") || UserDefaults.standard.bool(forKey:"autoFullscreen") { player.playImmediately(atRate:PlaybackOptions.speed()) }
         } catch { if !Task.isCancelled { self.error = error.localizedDescription } }
     }
     func stop(bvid: String, cid: String) {
@@ -102,12 +102,15 @@ import MediaPlayer
 struct NativePlayer: UIViewControllerRepresentable {
     @AppStorage("pip") private var pip = true
     @AppStorage("backgroundPlayback") private var background = true
+    @AppStorage("autoFullscreen") private var autoFullscreen = false
     let player: AVPlayer
+    var supportsAutoFullscreen = true
     var onRelease: () -> Void = {}
 
     @MainActor final class Coordinator: NSObject, AVPlayerViewControllerDelegate {
         var token: NSObjectProtocol?
         var background = true
+        var didEnterFullscreen = false
         private var presentationRetention:Coordinator?
         private func updatePresentationRetention() { presentationRetention = lifetime.fullScreen || lifetime.pictureInPicture ? self:nil }
         let lifetime: PlayerControllerLifetime
@@ -119,6 +122,8 @@ struct NativePlayer: UIViewControllerRepresentable {
             }
         }
         func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+            didEnterFullscreen = true
+            playerViewController.entersFullScreenWhenPlaybackBegins = false
             lifetime.fullScreen = true;updatePresentationRetention()
             coordinator.animate(alongsideTransition: nil) { [weak self] transition in
                 if transition.isCancelled { self?.lifetime.fullScreen = false; self?.lifetime.releaseIfDetached();self?.updatePresentationRetention() }
@@ -139,6 +144,7 @@ struct NativePlayer: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(player: player, onRelease: onRelease) }
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let vc = AVPlayerViewController()
+        vc.entersFullScreenWhenPlaybackBegins = supportsAutoFullscreen && autoFullscreen
         vc.player = player
         vc.delegate = context.coordinator
         vc.allowsPictureInPicturePlayback = pip
@@ -148,6 +154,7 @@ struct NativePlayer: UIViewControllerRepresentable {
         return vc
     }
     func updateUIViewController(_ vc: AVPlayerViewController, context: Context) {
+        vc.entersFullScreenWhenPlaybackBegins = supportsAutoFullscreen && autoFullscreen && !context.coordinator.didEnterFullscreen
         // Reassigning the player during a presentation transition is unnecessary.
         if vc.player !== player { vc.player = player }
         vc.allowsPictureInPicturePlayback = pip

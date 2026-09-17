@@ -13,7 +13,7 @@ struct ListenView: View {
                 Cover(url: selected.cover).frame(width: 190, height: 190).clipShape(Circle()).overlay(Circle().stroke(.thinMaterial, lineWidth: 16)).padding(.top, 24)
                 Text(selected.title).font(.headline).multilineTextAlignment(.center).lineLimit(2).padding(.horizontal)
                 Text(selected.author).foregroundStyle(.secondary)
-                NativePlayer(player: playback.player, onRelease: { playback.stop(bvid: selected.id, cid: cid) }).frame(height: 75)
+                NativePlayer(player: playback.player, supportsAutoFullscreen:false, onRelease: { playback.stop(bvid: selected.id, cid: cid) }).frame(height: 75)
                 HStack(spacing: 40) {
                     Button { skip(-1) } label: { Image(systemName:"backward.end.fill") }.accessibilityLabel("上一首")
                     Button { playback.player.play() } label: { Image(systemName:"play.fill") }.accessibilityLabel("播放")
