@@ -78,7 +78,12 @@ struct DanmakuOverlay: View {
                 let current = player.currentTime().seconds
                 guard current.isFinite else { return }
                 // Quantize each lane to one entry per 2 seconds to keep a bounded draw budget.
-                let active = items.filter { $0.time <= current && current - $0.time < 7 }.suffix(36)
+                var low = 0; var high = items.count
+                while low < high {
+                    let mid = (low + high) / 2
+                    if items[mid].time <= current { low = mid + 1 } else { high = mid }
+                }
+                let active = items[max(0, low - 36)..<low].filter { current - $0.time < 7 }
                 var occupied = Set<Int>()
                 for item in active {
                     let lane = abs(item.id % 6)

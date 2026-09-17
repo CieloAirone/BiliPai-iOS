@@ -138,14 +138,7 @@ struct SearchView: View {
                     if !history.isEmpty { Button("清除历史", role: .destructive) { historyData = "[]" } }
                 }.frame(maxWidth: .infinity, alignment: .leading).padding()
             }
-            if mode == "推荐", let first = videos.first {
-                NavigationLink { VideoDetailView(video: first) } label: {
-                    Cover(url: first.cover).frame(height: 210).clipped()
-                        .overlay(alignment: .bottomLeading) { Text(first.title).font(.headline).foregroundStyle(.white).lineLimit(2).padding().frame(maxWidth: .infinity, alignment: .leading).background(.linearGradient(colors: [.clear,.black.opacity(0.8)], startPoint: .top, endPoint: .bottom)) }
-                        .clipShape(RoundedRectangle(cornerRadius: 16)).padding(.horizontal)
-                }.buttonStyle(.plain)
-                VideoGrid(videos: Array(videos.dropFirst()))
-            } else { VideoGrid(videos: videos) }
+            VideoGrid(videos: videos)
             if loading { ProgressView() }
             if !error.isEmpty { FailureView(message: error) { Task { await search(reset: true) } } }
             if !loading && !videos.isEmpty && !end { Button("加载更多") { Task { await search(reset: false) } }.padding() }

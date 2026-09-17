@@ -3,6 +3,7 @@ final class NavigationTests: XCTestCase {
     func testNativeNavigationAndThemeSettings() {
         let app = XCUIApplication(); app.launch()
         XCTAssertTrue(app.tabBars.buttons["推荐"].waitForExistence(timeout: 15))
+        let home = XCTAttachment(screenshot: app.screenshot()); home.name = "Home"; home.lifetime = .keepAlways; add(home)
         app.tabBars.buttons["我的"].tap()
         XCTAssertTrue(app.staticTexts["历史记录"].waitForExistence(timeout: 5))
         let profile = XCTAttachment(screenshot: app.screenshot()); profile.name = "Profile"; profile.lifetime = .keepAlways; add(profile)

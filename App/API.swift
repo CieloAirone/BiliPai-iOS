@@ -59,7 +59,8 @@ actor BiliAPI {
         let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else { throw BiliError(message: "网络请求失败，请稍后重试") }
         let root = JSON(try JSONSerialization.jsonObject(with: data))
-        guard root["code"].int == 0 else { throw BiliError(message: "\(root["message"].string)（\(root["code"].int)）") }
+        let guestNav = path == "/x/web-interface/nav" && root["code"].int == -101
+        guard root["code"].int == 0 || guestNav else { throw BiliError(message: "\(root["message"].string)（\(root["code"].int)）") }
         return root["data"].raw is NSNull ? root["result"] : root["data"]
     }
 }

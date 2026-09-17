@@ -41,6 +41,12 @@ jobs:
         run: brew install xcodegen
       - name: Unit tests on iPhone simulator
         run: bash scripts/build-ios.sh test
+      - name: Export simulator screenshots
+        if: always()
+        run: |
+          if [ -d build/Tests.xcresult ]; then
+            xcrun xcresulttool export attachments --path build/Tests.xcresult --output-path build/screenshots
+          fi
       - name: Archive unsigned IPA
         run: bash scripts/build-ios.sh archive
       - uses: actions/upload-artifact@v4
@@ -59,6 +65,7 @@ jobs:
           path: |
             build/logs
             build/Tests.xcresult
+            build/screenshots
           retention-days: 7
       - name: Summary
         run: |

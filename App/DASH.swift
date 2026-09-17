@@ -114,6 +114,14 @@ enum MediaFetch {
         return data
     }
 }
+private final class ListenerCompletion: @unchecked Sendable {
+    private let lock = NSLock()
+    private var completed = false
+    func claim() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        guard !completed else { return false }; completed = true; return true
+    }
+}
 final class HLSBridge: @unchecked Sendable {
     private let queue = DispatchQueue(label: "bilipai.hls")
     private var listener: NWListener?
@@ -145,16 +153,15 @@ final class HLSBridge: @unchecked Sendable {
         self.listener = listener
         listener.newConnectionHandler = { [weak self] connection in self?.accept(connection) }
         return try await withCheckedThrowingContinuation { continuation in
-            var resumed = false
+            let completion = ListenerCompletion()
             listener.stateUpdateHandler = { [weak self] state in
-                guard !resumed else { return }
                 switch state {
                 case .ready:
-                    resumed = true
+                    guard completion.claim() else { return }
                     guard let self, let port = listener.port, let url = URL(string: "http://127.0.0.1:\(port.rawValue)/\(self.token)/master.m3u8") else { continuation.resume(throwing: URLError(.badURL)); return }
                     continuation.resume(returning: url)
-                case .failed(let error): resumed = true; continuation.resume(throwing: error)
-                case .cancelled: resumed = true; continuation.resume(throwing: CancellationError())
+                case .failed(let error): if completion.claim() { continuation.resume(throwing: error) }
+                case .cancelled: if completion.claim() { continuation.resume(throwing: CancellationError()) }
                 default: break
                 }
             }
