@@ -1,0 +1,1926 @@
+{
+  "commit": "d9470b11297ea7948e5711491b73f6756c170dfe",
+  "note": "Literal title inventory; contains duplicate references and interpolated labels, not a completed coverage claim. Resource-based titles need separate review.",
+  "entries": [
+    {
+      "title": "界面与主题",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 62
+    },
+    {
+      "title": "首页与推荐",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 69
+    },
+    {
+      "title": "导航与标签",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 76
+    },
+    {
+      "title": "播放与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 83
+    },
+    {
+      "title": "全屏与手势",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 90
+    },
+    {
+      "title": "互动与评论",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 97
+    },
+    {
+      "title": "数据与备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 104
+    },
+    {
+      "title": "隐私与权限",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 111
+    },
+    {
+      "title": "诊断与开发",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 118
+    },
+    {
+      "title": "关于与支持",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 131
+    },
+    {
+      "title": "外观设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 138
+    },
+    {
+      "title": "播放设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 178
+    },
+    {
+      "title": "导航设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 303
+    },
+    {
+      "title": "权限管理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 334
+    },
+    {
+      "title": "黑名单管理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 341
+    },
+    {
+      "title": "设置分享",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 348
+    },
+    {
+      "title": "WebDAV 云备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 355
+    },
+    {
+      "title": "下载位置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 362
+    },
+    {
+      "title": "图片保存位置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 369
+    },
+    {
+      "title": "清除缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 376
+    },
+    {
+      "title": "插件中心",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 386
+    },
+    {
+      "title": "导出日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 393
+    },
+    {
+      "title": "开源许可证",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 403
+    },
+    {
+      "title": "开源主页",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 410
+    },
+    {
+      "title": "检查更新",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 417
+    },
+    {
+      "title": "查看更新日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 424
+    },
+    {
+      "title": "重看使用须知",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 431
+    },
+    {
+      "title": "小贴士 & 隐藏操作",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 438
+    },
+    {
+      "title": "默认打开链接",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 445
+    },
+    {
+      "title": "打赏作者",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 452
+    },
+    {
+      "title": "Telegram 频道 / 交流群",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 459
+    },
+    {
+      "title": "Twitter / X",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 466
+    },
+    {
+      "title": "发布渠道声明",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 473
+    },
+    {
+      "title": "自定义主题颜色",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 480
+    },
+    {
+      "title": "界面预设 / 主题模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 488
+    },
+    {
+      "title": "安卓液态玻璃",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 497
+    },
+    {
+      "title": "字体与显示大小",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 516
+    },
+    {
+      "title": "开屏壁纸 / 启动画面",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 524
+    },
+    {
+      "title": "动画与效果 / 触感反馈 / 文字复制",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 532
+    },
+    {
+      "title": "首页与列表",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 554
+    },
+    {
+      "title": "硬件解码 / 编码偏好",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 562
+    },
+    {
+      "title": "播放速度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 570
+    },
+    {
+      "title": "后台播放 / 画中画 / 小窗",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 578
+    },
+    {
+      "title": "手势灵敏度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 586
+    },
+    {
+      "title": "自动连播 / 跳过片头片尾 / 双击操作 / 弹幕 / 字幕 / 笔记",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 594
+    },
+    {
+      "title": "自动横竖屏 / 全屏方向 / 平板布局",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 602
+    },
+    {
+      "title": "网络与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 610
+    },
+    {
+      "title": "省流量模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 618
+    },
+    {
+      "title": "播放器诊断 / 统计信息",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 626
+    },
+    {
+      "title": "悬浮底栏 / 搜索联动",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 634
+    },
+    {
+      "title": "底栏显示模式 / 标签样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 653
+    },
+    {
+      "title": "顶部标签管理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 666
+    },
+    {
+      "title": "平板侧边导航栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 689
+    },
+    {
+      "title": "当前底栏预览",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 697
+    },
+    {
+      "title": "可用底栏项目",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsSearchPolicy.kt",
+      "line": 705
+    },
+    {
+      "title": "双列网格",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsViewModel.kt",
+      "line": 1191
+    },
+    {
+      "title": "单列视频",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsViewModel.kt",
+      "line": 1192
+    },
+    {
+      "title": "顶部模糊强度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 412
+    },
+    {
+      "title": "模糊覆盖范围",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 431
+    },
+    {
+      "title": "模糊过渡",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 445
+    },
+    {
+      "title": "文字清晰度保护",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 459
+    },
+    {
+      "title": "边缘彩光",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 475
+    },
+    {
+      "title": "内容折射",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/LiquidGlassLivePreview.kt",
+      "line": 491
+    },
+    {
+      "title": "外观与主题",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 12
+    },
+    {
+      "title": "播放与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 17
+    },
+    {
+      "title": "首页与推荐",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 22
+    },
+    {
+      "title": "导航与交互",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 27
+    },
+    {
+      "title": "隐私与权限",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 32
+    },
+    {
+      "title": "存储与备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 37
+    },
+    {
+      "title": "插件与扩展",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 42
+    },
+    {
+      "title": "系统与关于",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 47
+    },
+    {
+      "title": "外观与主题",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 54
+    },
+    {
+      "title": "播放与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 61
+    },
+    {
+      "title": "隐私与权限",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/SettingsRootCategoryPolicy.kt",
+      "line": 68
+    },
+    {
+      "title": "插件不可安装",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/PluginCapabilityUiPolicy.kt",
+      "line": 130
+    },
+    {
+      "title": "播放地址与画质协商缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 17
+    },
+    {
+      "title": "网络缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 23
+    },
+    {
+      "title": "图片与预览图缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 29
+    },
+    {
+      "title": "字幕与弹幕缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 35
+    },
+    {
+      "title": "临时文件与日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 41
+    },
+    {
+      "title": "关注与签名元数据缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/CacheClearUiPolicy.kt",
+      "line": 47
+    },
+    {
+      "title": "源码一致性",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/update/AppBuildVerificationPolicy.kt",
+      "line": 297
+    },
+    {
+      "title": "构建来源",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/update/AppBuildVerificationPolicy.kt",
+      "line": 310
+    },
+    {
+      "title": "SHA-256",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/update/AppBuildVerificationPolicy.kt",
+      "line": 334
+    },
+    {
+      "title": "模糊强度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsComponents.kt",
+      "line": 16
+    },
+    {
+      "title": "外观设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 154
+    },
+    {
+      "title": "播放设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 163
+    },
+    {
+      "title": "导航设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 172
+    },
+    {
+      "title": "打赏作者",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 397
+    },
+    {
+      "title": "关于",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 490
+    },
+    {
+      "title": "Telegram 频道",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 495
+    },
+    {
+      "title": "Telegram 交流群",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 504
+    },
+    {
+      "title": "开源主页",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 513
+    },
+    {
+      "title": "检查更新",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 522
+    },
+    {
+      "title": "打赏作者",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 531
+    },
+    {
+      "title": "设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 552
+    },
+    {
+      "title": "设置分享",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 557
+    },
+    {
+      "title": "WebDAV 备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 566
+    },
+    {
+      "title": "清理缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 575
+    },
+    {
+      "title": "外观与主题",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 645
+    },
+    {
+      "title": "外观设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 650
+    },
+    {
+      "title": "播放与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 665
+    },
+    {
+      "title": "播放器设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 670
+    },
+    {
+      "title": "互动与评论",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 684
+    },
+    {
+      "title": "互动、评论与内容预览",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 689
+    },
+    {
+      "title": "首页展示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 704
+    },
+    {
+      "title": "首页样式与推荐卡片",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 709
+    },
+    {
+      "title": "推荐流与动态",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 723
+    },
+    {
+      "title": "导航",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 749
+    },
+    {
+      "title": "导航与标签",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 754
+    },
+    {
+      "title": "交互与动效",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 768
+    },
+    {
+      "title": "动效与触感",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 773
+    },
+    {
+      "title": "隐私与权限",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 788
+    },
+    {
+      "title": "存储与备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 805
+    },
+    {
+      "title": "插件与扩展",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 825
+    },
+    {
+      "title": "显示与交互",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 835
+    },
+    {
+      "title": "外观设置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 840
+    },
+    {
+      "title": "动效",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 854
+    },
+    {
+      "title": "动效与图标",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 859
+    },
+    {
+      "title": "导航",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 873
+    },
+    {
+      "title": "导航与标签",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 878
+    },
+    {
+      "title": "全屏与手势",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 892
+    },
+    {
+      "title": "全屏与手势",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 897
+    },
+    {
+      "title": "首页展示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 912
+    },
+    {
+      "title": "首页样式与壁纸",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 917
+    },
+    {
+      "title": "推荐流与动态",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 931
+    },
+    {
+      "title": "画质与播放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 956
+    },
+    {
+      "title": "播放与画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 961
+    },
+    {
+      "title": "互动",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 975
+    },
+    {
+      "title": "互动与评论",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 980
+    },
+    {
+      "title": "同步与存储",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 995
+    },
+    {
+      "title": "隐私与安全",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1014
+    },
+    {
+      "title": "系统诊断",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1031
+    },
+    {
+      "title": "播放器诊断",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1047
+    },
+    {
+      "title": "帮助与系统",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1061
+    },
+    {
+      "title": "关于与发布",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1070
+    },
+    {
+      "title": "小贴士 & 隐藏操作",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1130
+    },
+    {
+      "title": "默认打开链接",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1139
+    },
+    {
+      "title": "内容与存储",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1260
+    },
+    {
+      "title": "隐私与安全",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1268
+    },
+    {
+      "title": "扩展与调试",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1277
+    },
+    {
+      "title": "关于与支持",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1285
+    },
+    {
+      "title": "首页推荐来源",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1320
+    },
+    {
+      "title": "刷新时保留当前列表",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1331
+    },
+    {
+      "title": "动态图片默认显示文字",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1340
+    },
+    {
+      "title": "“全部”页显示关注用户栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1349
+    },
+    {
+      "title": "浏览动态时收起顶部栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1358
+    },
+    {
+      "title": "动态页面布局",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1370
+    },
+    {
+      "title": "首页刷新数量",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1393
+    },
+    {
+      "title": "搜索框推荐词",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1517
+    },
+    {
+      "title": "搜索推荐词",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1531
+    },
+    {
+      "title": "不记录历史",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1540
+    },
+    {
+      "title": "进入隐私内容时验证",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1549
+    },
+    {
+      "title": "权限管理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1559
+    },
+    {
+      "title": "黑名单管理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1568
+    },
+    {
+      "title": "发评反诈历史",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1576
+    },
+    {
+      "title": "设置分享",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1612
+    },
+    {
+      "title": "WebDAV 云备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1622
+    },
+    {
+      "title": "下载位置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1631
+    },
+    {
+      "title": "图片保存位置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1641
+    },
+    {
+      "title": "清除缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1651
+    },
+    {
+      "title": "自动清理缓存",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1659
+    },
+    {
+      "title": "缓存容量上限",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1675
+    },
+    {
+      "title": "插件中心",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1697
+    },
+    {
+      "title": "崩溃追踪",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1729
+    },
+    {
+      "title": "使用情况统计",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1738
+    },
+    {
+      "title": "增强诊断日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1747
+    },
+    {
+      "title": "HTTP 代理",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1763
+    },
+    {
+      "title": "代理地址",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1779
+    },
+    {
+      "title": "导出日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1789
+    },
+    {
+      "title": "插件中心",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 1968
+    },
+    {
+      "title": "源码与验证",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2110
+    },
+    {
+      "title": "开源主页",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2115
+    },
+    {
+      "title": "源码一致性",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2125
+    },
+    {
+      "title": "构建来源",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2143
+    },
+    {
+      "title": "SHA-256",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2159
+    },
+    {
+      "title": "更新",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2177
+    },
+    {
+      "title": "开源许可证",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2182
+    },
+    {
+      "title": "检查更新",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2191
+    },
+    {
+      "title": "查看更新日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2200
+    },
+    {
+      "title": "自动检查更新",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2208
+    },
+    {
+      "title": "检测渠道",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2216
+    },
+    {
+      "title": "辅助",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2232
+    },
+    {
+      "title": "版本",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2236
+    },
+    {
+      "title": "重看使用须知",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2247
+    },
+    {
+      "title": "趣味彩蛋",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/ui/SettingsSections.kt",
+      "line": 2255
+    },
+    {
+      "title": "使用原生 Miuix 弹窗",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 305
+    },
+    {
+      "title": "启用硬件解码",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 318
+    },
+    {
+      "title": "优先使用：${resolveSelectionLabel(codecOptions, videoCodecPreference, fallbackLabel = ",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 330
+    },
+    {
+      "title": "无法播放时改用：${resolveSelectionLabel(codecOptions, videoSecondCodecPreference, fallbackLabel = ",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 343
+    },
+    {
+      "title": "记忆上次播放速度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 369
+    },
+    {
+      "title": "隐藏长按倍速提示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 387
+    },
+    {
+      "title": "默认播放速度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 515
+    },
+    {
+      "title": "离开播放页后停止",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 557
+    },
+    {
+      "title": "后台播放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 571
+    },
+    {
+      "title": "播放时暂停其他应用的声音",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 589
+    },
+    {
+      "title": "离开播放页后的方式：${if (modeControlsEnabled) miniPlayerMode.label else ",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 606
+    },
+    {
+      "title": "视频小横条",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 632
+    },
+    {
+      "title": "点击小横条进入听视频",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 650
+    },
+    {
+      "title": "小窗/画中画不加载弹幕",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 707
+    },
+    {
+      "title": "听视频离开时自动进入画中画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 730
+    },
+    {
+      "title": "手势灵敏度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 766
+    },
+    {
+      "title": "屏幕显示播放状态",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 792
+    },
+    {
+      "title": "播放器诊断日志",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 814
+    },
+    {
+      "title": "分段加载兼容模式（实验性）",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 827
+    },
+    {
+      "title": "画质降档诊断弹窗",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 844
+    },
+    {
+      "title": "降档弹窗仅提示一次",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 857
+    },
+    {
+      "title": "CDN 设置：${playbackCdnPreference.displayName}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 920
+    },
+    {
+      "title": "B站定向流量支持",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 939
+    },
+    {
+      "title": "自动最高画质",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 959
+    },
+    {
+      "title": "无线网络默认画质：${getQualityLabel(wifiQuality)}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 978
+    },
+    {
+      "title": "移动网络默认画质：${getQualityLabel(mobileQuality)}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1014
+    },
+    {
+      "title": "默认音质：${getAudioQualityLabel(normalizedDefaultAudioQuality)}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1041
+    },
+    {
+      "title": "省流量模式：${dataSaverMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1101
+    },
+    {
+      "title": "省流量时降低首页封面清晰度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1117
+    },
+    {
+      "title": "进入视频自动播放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1259
+    },
+    {
+      "title": "续播弹窗提示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1277
+    },
+    {
+      "title": "UP 主页看过视频定位提示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1295
+    },
+    {
+      "title": "自动播放下一个",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1314
+    },
+    {
+      "title": "列表/收藏夹连续播放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1328
+    },
+    {
+      "title": "视频播完后：${playbackCompletionBehavior.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1348
+    },
+    {
+      "title": "默认展开视频简介",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1389
+    },
+    {
+      "title": "显示 AI 总结入口",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1407
+    },
+    {
+      "title": "显示视频笔记",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1425
+    },
+    {
+      "title": "默认折叠视频笔记",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1444
+    },
+    {
+      "title": "双击点赞",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1463
+    },
+    {
+      "title": "自动跳过片头片尾",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1476
+    },
+    {
+      "title": "评论回复预览：${commentCollapsedReplyPreviewLimit}条",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1494
+    },
+    {
+      "title": "楼中楼已加载数量",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1513
+    },
+    {
+      "title": "评论发送检测",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1527
+    },
+    {
+      "title": "评论区个性装扮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1541
+    },
+    {
+      "title": "图片长按操作",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1555
+    },
+    {
+      "title": "图片 3D 翻页",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1573
+    },
+    {
+      "title": "快进秒数（双击右侧）：${seekForwardSeconds} 秒",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1785
+    },
+    {
+      "title": "后退秒数（双击左侧）：${seekBackwardSeconds} 秒",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1798
+    },
+    {
+      "title": "隐藏视频内互动提示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1814
+    },
+    {
+      "title": "同步弹幕设置到账号",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1832
+    },
+    {
+      "title": "评论上滑缩小播放器：${portraitPlayerCollapseMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1846
+    },
+    {
+      "title": "详情页控件随滚动隐藏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1861
+    },
+    {
+      "title": "缩小后自动暂停",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1882
+    },
+    {
+      "title": "竖屏上滑进入全屏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1901
+    },
+    {
+      "title": "竖屏视频直达刷视频模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1920
+    },
+    {
+      "title": "竖屏刷视频仅推荐真竖屏（Beta）",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1939
+    },
+    {
+      "title": "启动时进入竖屏视频流",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1958
+    },
+    {
+      "title": "中部滑动切换全屏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1977
+    },
+    {
+      "title": "左右侧滑动调节亮度/音量",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 1996
+    },
+    {
+      "title": "调节系统亮度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2014
+    },
+    {
+      "title": "非全屏滑动调进度范围",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2049
+    },
+    {
+      "title": "横屏滑动调进度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2069
+    },
+    {
+      "title": "横屏滑动调进度范围",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2085
+    },
+    {
+      "title": "自动横竖屏切换",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2188
+    },
+    {
+      "title": "横屏适配",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2202
+    },
+    {
+      "title": "显示投屏按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2216
+    },
+    {
+      "title": "显示关注按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2229
+    },
+    {
+      "title": "平板评论区宽度：${tabletCommentPanelWidthPreset.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2241
+    },
+    {
+      "title": "默认全屏方向：${fullscreenMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2258
+    },
+    {
+      "title": "固定全屏比例：${fullscreenAspectRatio.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2271
+    },
+    {
+      "title": "全屏手势反向",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2285
+    },
+    {
+      "title": "播放页沉浸状态栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2299
+    },
+    {
+      "title": "竖屏黑边动态模糊",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2320
+    },
+    {
+      "title": "自动进入全屏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2338
+    },
+    {
+      "title": "自动退出全屏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2357
+    },
+    {
+      "title": "退出时机：${autoExitFullscreenMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2381
+    },
+    {
+      "title": "全屏显示锁定按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2405
+    },
+    {
+      "title": "全屏显示截图按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2419
+    },
+    {
+      "title": "应用内干净截图",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2433
+    },
+    {
+      "title": "截图触发方式：${appScreenshotGestureMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2445
+    },
+    {
+      "title": "截图范围：${appScreenshotCaptureMode.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2457
+    },
+    {
+      "title": "全屏显示电量",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2470
+    },
+    {
+      "title": "全屏显示时间",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2484
+    },
+    {
+      "title": "全屏显示互动按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2498
+    },
+    {
+      "title": "卡片与视频页观看人数",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2516
+    },
+    {
+      "title": "底部进度条展示：${bottomProgressBehavior.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2533
+    },
+    {
+      "title": "进度条峰值弹幕",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2552
+    },
+    {
+      "title": "控制栏进度条位置：${playerProgressPlacement.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/PlaybackSettingsScreen.kt",
+      "line": 2568
+    },
+    {
+      "title": "在线装扮目录",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/SkinCatalogScreen.kt",
+      "line": 194
+    },
+    {
+      "title": "1. 摸鱼模式：播放器缩小策略",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 61
+    },
+    {
+      "title": "2. 回顶部不用狂划",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 67
+    },
+    {
+      "title": "3. 封面长按有快捷操作",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 73
+    },
+    {
+      "title": "4. 搜索不只搜视频",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 79
+    },
+    {
+      "title": "5. 关闭自动连播，结尾更安静",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 90
+    },
+    {
+      "title": "6. 自动横竖屏更省手",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 96
+    },
+    {
+      "title": "7. 小窗和画中画是两种玩法",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 102
+    },
+    {
+      "title": "8. 双击点赞可按喜好开关",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 108
+    },
+    {
+      "title": "9. 空降助手能跳过片头广告",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 119
+    },
+    {
+      "title": "10. 版本号连点有彩蛋",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 125
+    },
+    {
+      "title": "11. 趣味彩蛋可随时关闭",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 131
+    },
+    {
+      "title": "12. 链接默认打开可一步到位",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/TipsSettingsScreen.kt",
+      "line": 137
+    },
+    {
+      "title": "精选",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/IconSettingsScreen.kt",
+      "line": 78
+    },
+    {
+      "title": "女仆图标外观",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/IconSettingsScreen.kt",
+      "line": 219
+    },
+    {
+      "title": "${uiPresetTitle}：$selectedUiStyleLabel",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 536
+    },
+    {
+      "title": "安卓液态玻璃",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 548
+    },
+    {
+      "title": "${themeModeTitle}：$selectedThemeModeLabel",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 572
+    },
+    {
+      "title": "图标样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 586
+    },
+    {
+      "title": "列表条目样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 600
+    },
+    {
+      "title": "单选项展示方式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 614
+    },
+    {
+      "title": "${darkThemeStyleTitle}：$selectedDarkThemeStyleLabel",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 637
+    },
+    {
+      "title": "${appLanguageTitle}：$selectedAppLanguageLabel",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 653
+    },
+    {
+      "title": "主题颜色来源：$selectedMd3ColorSourceLabel",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 667
+    },
+    {
+      "title": "自定义主题颜色",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 692
+    },
+    {
+      "title": "高级配色",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 712
+    },
+    {
+      "title": "色彩风格",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 744
+    },
+    {
+      "title": "色彩标准",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 754
+    },
+    {
+      "title": "主题色：$selectedThemeColorName",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 773
+    },
+    {
+      "title": "字体大小：${state.appFontSizePreset.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 917
+    },
+    {
+      "title": "应用字体",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 930
+    },
+    {
+      "title": "恢复默认字体",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 952
+    },
+    {
+      "title": "界面缩放：${state.appUiScalePreset.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 970
+    },
+    {
+      "title": "精细调整显示大小",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 985
+    },
+    {
+      "title": "显示缩放：${resolveDisplayedAppDpiPercent(state.appDpiOverridePercent)}%",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1007
+    },
+    {
+      "title": "使用开屏壁纸",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1051
+    },
+    {
+      "title": "随机展示开屏壁纸",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1061
+    },
+    {
+      "title": "开屏图标遮罩动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1135
+    },
+    {
+      "title": "应用图标",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1240
+    },
+    {
+      "title": "展示样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1281
+    },
+    {
+      "title": "显示一键回顶",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1295
+    },
+    {
+      "title": "统计信息贴封面（紧凑）",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1309
+    },
+    {
+      "title": "首页顶部轮播封面",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1327
+    },
+    {
+      "title": "轮播默认播放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1347
+    },
+    {
+      "title": "卡片封面比例：${homeFeedCardStyle.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1366
+    },
+    {
+      "title": "首页视频时长：${homeDurationStyle.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1380
+    },
+    {
+      "title": "首页壁纸效果",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1469
+    },
+    {
+      "title": "壁纸作用范围",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1493
+    },
+    {
+      "title": "首页顶栏仅回顶显示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1512
+    },
+    {
+      "title": "展示番剧影视时间表",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1524
+    },
+    {
+      "title": "UP主标识",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1538
+    },
+    {
+      "title": "完整卡片展示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1556
+    },
+    {
+      "title": "UP主头像",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1574
+    },
+    {
+      "title": "卡片与视频页观看人数",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1592
+    },
+    {
+      "title": "编辑资料按钮",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1610
+    },
+    {
+      "title": "网格列数",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1636
+    },
+    {
+      "title": "推荐流卡片宽度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1653
+    },
+    {
+      "title": "浅色模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1756
+    },
+    {
+      "title": "深色模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AppearanceSettingsScreen.kt",
+      "line": 1763
+    },
+    {
+      "title": "悬浮底栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 336
+    },
+    {
+      "title": "导航图标交叉缩放",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 347
+    },
+    {
+      "title": "底栏搜索联动",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 360
+    },
+    {
+      "title": "显示模式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 386
+    },
+    {
+      "title": "标签样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 400
+    },
+    {
+      "title": "顶部标签样式",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 428
+    },
+    {
+      "title": "首页右上角入口",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 447
+    },
+    {
+      "title": "首页顶部布局",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 460
+    },
+    {
+      "title": "全局顶栏显示",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 473
+    },
+    {
+      "title": "侧边导航栏",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 629
+    },
+    {
+      "title": "侧边栏账号切换",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/BottomBarSettingsScreen.kt",
+      "line": 645
+    },
+    {
+      "title": "界面入场动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 288
+    },
+    {
+      "title": "触感反馈",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 301
+    },
+    {
+      "title": "点按文字复制",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 310
+    },
+    {
+      "title": "进场动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 349
+    },
+    {
+      "title": "过渡动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 358
+    },
+    {
+      "title": "相关推荐过渡动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 367
+    },
+    {
+      "title": "实时画面转场",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 385
+    },
+    {
+      "title": "视频返回跟手姿态",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 395
+    },
+    {
+      "title": "转场时模糊背景",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 416
+    },
+    {
+      "title": "全局导航动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 425
+    },
+    {
+      "title": "预见式返回最大进度",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 443
+    },
+    {
+      "title": "返回过渡模糊",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 467
+    },
+    {
+      "title": "缩放退出方向",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 488
+    },
+    {
+      "title": "全屏滑动返回",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 505
+    },
+    {
+      "title": "视频转场速度：${state.videoSharedTransitionSpeed.label}",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 521
+    },
+    {
+      "title": "自定义时长",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 530
+    },
+    {
+      "title": "骨架呼吸动画",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 665
+    },
+    {
+      "title": "顶部栏磨砂",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 680
+    },
+    {
+      "title": "顶部渐进模糊",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 689
+    },
+    {
+      "title": "底栏磨砂",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/AnimationSettingsScreen.kt",
+      "line": 698
+    },
+    {
+      "title": "发评反诈历史",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/screen/CommentFraudHistoryScreen.kt",
+      "line": 96
+    },
+    {
+      "title": "会一起分享的内容",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 154
+    },
+    {
+      "title": "会自动跳过的内容",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 163
+    },
+    {
+      "title": "包含设备调试信息",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 176
+    },
+    {
+      "title": "导出到文件",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 194
+    },
+    {
+      "title": "分享导出文件",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 213
+    },
+    {
+      "title": "从文件导入",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 221
+    },
+    {
+      "title": "保存当前配置",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 236
+    },
+    {
+      "title": "设置包（JSON）",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/share/SettingsShareScreen.kt",
+      "line": 264
+    },
+    {
+      "title": "启动诊断",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/diagnostics/StartupRecoveryActivity.kt",
+      "line": 31
+    },
+    {
+      "title": "启用 WebDAV 云备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 144
+    },
+    {
+      "title": "服务器",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 153
+    },
+    {
+      "title": "用户名",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 164
+    },
+    {
+      "title": "远端目录",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 175
+    },
+    {
+      "title": "测试连接",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 194
+    },
+    {
+      "title": "立即备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 202
+    },
+    {
+      "title": "恢复最新备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 213
+    },
+    {
+      "title": "刷新远端列表",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 221
+    },
+    {
+      "title": "暂无备份",
+      "source": "app/src/main/java/com/android/purebilibili/feature/settings/webdav/WebDavBackupScreen.kt",
+      "line": 235
+    }
+  ]
+}

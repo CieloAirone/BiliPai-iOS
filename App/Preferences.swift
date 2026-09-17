@@ -8,17 +8,20 @@ enum Preferences {
         "appearance":"system", "accent":"blue", "fontScale":1.0,
         "autoplay":true, "rememberPosition":true, "quality":80, "defaultSpeed":1.0,
         "pip":true, "backgroundPlayback":true,
-        "danmakuEnabled":true, "dmOpacity":1.0, "dmFontSize":15.0, "dmDuration":7.0,
-        "dmLimit":36, "dmArea":1.0, "dmScroll":true, "dmTop":true, "dmBottom":true,
+        "danmakuEnabled":true, "dmOpacity":0.85, "dmFontSize":15.0, "dmDuration":7.0,
+        "dmLimit":36, "dmArea":0.5, "dmScroll":true, "dmTop":true, "dmBottom":true,
         "dmKeywords":"", "gridColumns":0, "cardWidth":155.0, "showAuthor":true,
         "heroCard":true, "feedCount":20, "defaultFeed":"推荐",
         "showDynamicTab":true, "showHistoryTab":true, "showListenTab":true,
         "haptics":true, "reduceMotion":false, "privacyMode":false,
-        "filterEnabled":false, "filterKeywords":"", "blockedAuthors":""
+        "rulePlugins":"[]", "disabledPlugins":"", "filterEnabled":false, "filterKeywords":"", "blockedAuthors":""
     ]
     static func register() { UserDefaults.standard.register(defaults: defaults) }
     static func lines(_ value: String) -> [String] { value.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty } }
     static func accepts(_ video: Video, store: UserDefaults = .standard) -> Bool {
+        let disabled = lines(store.string(forKey:"disabledPlugins") ?? "")
+        let fields = ["title":JSON(video.title),"owner.name":JSON(video.author),"stat.view":JSON(video.views)]
+        if RulePlugins.decode(store.string(forKey:"rulePlugins") ?? "[]").contains(where: { $0.type == "feed" && !disabled.contains($0.id) && $0.hides(fields) }) { return false }
         if lines(store.string(forKey:"blockedAuthors") ?? "").contains(video.author) { return false }
         guard store.bool(forKey:"filterEnabled") else { return true }
         return !lines(store.string(forKey:"filterKeywords") ?? "").contains { video.title.localizedCaseInsensitiveContains($0) }
@@ -40,7 +43,12 @@ enum Preferences {
             guard let expected = defaults[key] else { throw BiliError(message:"备份包含未知设置：\(key)") }
             if let string = expected as? String {
                 _ = string
-                guard let text = value as? String, text.count <= 16000 else { throw BiliError(message:"设置文本格式无效：\(key)") }
+                guard let text = value as? String, text.count <= (key == "rulePlugins" ? 180000 : 16000) else { throw BiliError(message:"设置文本格式无效：\(key)") }
+                if key == "rulePlugins" {
+                    let plugins = try JSONDecoder().decode([String].self,from:Data(text.utf8))
+                    guard plugins.count <= 20 else { throw BiliError(message:"插件数量超过限制") }
+                    for raw in plugins { _ = try RulePlugin.parse(Data(raw.utf8)) }
+                }
                 if let options = enums[key], !options.contains(text) { throw BiliError(message:"设置选项无效：\(key)") }
             } else {
                 guard let number = value as? NSNumber, let expectedNumber = expected as? NSNumber else { throw BiliError(message:"设置数值格式无效：\(key)") }

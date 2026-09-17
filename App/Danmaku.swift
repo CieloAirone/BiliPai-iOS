@@ -66,25 +66,33 @@ actor DanmakuStore {
     }
 }
 struct DanmakuOverlay: View {
-    @AppStorage("dmOpacity") private var opacity = 1.0
+    @AppStorage("dmOpacity") private var opacity = 0.85
     @AppStorage("dmFontSize") private var fontSize = 15.0
     @AppStorage("dmDuration") private var duration = 7.0
     @AppStorage("dmLimit") private var limit = 36
-    @AppStorage("dmArea") private var area = 1.0
+    @AppStorage("dmArea") private var area = 0.5
     @AppStorage("dmScroll") private var scroll = true
     @AppStorage("dmTop") private var top = true
     @AppStorage("dmBottom") private var bottom = true
     @AppStorage("dmKeywords") private var keywords = ""
+    @AppStorage("rulePlugins") private var rulePlugins = "[]"
+    @AppStorage("disabledPlugins") private var disabledPlugins = ""
     let player: AVPlayer
     let cid: String
     @State private var items: [Danmaku] = []
     @State private var store = DanmakuStore()
     @State private var segmentIndex = 1
     @State private var failure = ""
+    private var filteredItems: [Danmaku] {
+        let plugins = RulePlugins.decode(rulePlugins).filter { $0.type == "danmaku" && !Preferences.lines(disabledPlugins).contains($0.id) }
+        guard !plugins.isEmpty else { return items }
+        return items.filter { item in !plugins.contains { $0.hides(["content":JSON(item.text),"type":JSON(item.mode)]) } }
+    }
     var body: some View {
+        let renderedItems = filteredItems
         TimelineView(.animation(minimumInterval: 1.0 / 30)) { _ in
             Canvas { context, size in
-                draw(context:context,size:size)
+                draw(context:context,size:size,items:renderedItems)
             }
         }.opacity(opacity).clipped().allowsHitTesting(false).accessibilityHidden(true)
         .overlay(alignment: .topTrailing) { if !failure.isEmpty { Text("弹幕暂不可用").font(.caption2).padding(4).background(.black.opacity(0.5)).foregroundStyle(.white) } }
@@ -104,7 +112,7 @@ struct DanmakuOverlay: View {
             }
         }
     }
-    private func draw(context:GraphicsContext,size:CGSize) {
+    private func draw(context:GraphicsContext,size:CGSize,items:[Danmaku]) {
                 let current = player.currentTime().seconds
                 guard current.isFinite else { return }
                 // Quantize each lane to one entry per 2 seconds to keep a bounded draw budget.

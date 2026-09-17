@@ -69,7 +69,7 @@ struct SettingsCategoryView: View {
             case .navigation: NavigationPreferences()
             case .privacy: PrivacyPreferences()
             case .storage: StoragePreferences()
-            case .plugins: FilterPreferences()
+            case .plugins: PluginPreferences()
             case .about: AboutPreferences()
             }
         }.navigationTitle(category.rawValue).navigationBarTitleDisplayMode(.inline)
@@ -89,7 +89,7 @@ struct AppearancePreferences: View {
                 SliderRow(title:"字体缩放",value:$fontScale,range:0.8...1.4,step:0.1,suffix:"×")
                 Text("预览：BiliPai 让内容成为主角").font(.body)
             }
-            Section("应用图标") { HStack { Image(uiImage:UIImage(named:"AppIcon") ?? UIImage()).resizable().frame(width:48,height:48).clipShape(RoundedRectangle(cornerRadius:10));Text("蓝雪女仆 · 无留白") };Text("深色图标由 iOS 18 及以上的主屏幕外观控制。").font(.caption).foregroundStyle(.secondary) }
+            Section("应用图标") { HStack { Image(uiImage:UIImage(named:"AppIcon60x60") ?? UIImage()).resizable().frame(width:48,height:48).clipShape(RoundedRectangle(cornerRadius:10));Text("蓝雪女仆 · 无留白") };Text("深色图标由 iOS 18 及以上的主屏幕外观控制。").font(.caption).foregroundStyle(.secondary) }
         }
     }
 }
@@ -124,10 +124,10 @@ struct PlaybackPreferences: View {
 }
 struct DanmakuPreferences: View {
     @AppStorage("danmakuEnabled") private var enabled = true
-    @AppStorage("dmOpacity") private var opacity = 1.0
+    @AppStorage("dmOpacity") private var opacity = 0.85
     @AppStorage("dmFontSize") private var fontSize = 15.0
     @AppStorage("dmDuration") private var duration = 7.0
-    @AppStorage("dmArea") private var area = 1.0
+    @AppStorage("dmArea") private var area = 0.5
     @AppStorage("dmLimit") private var limit = 36
     @AppStorage("dmScroll") private var scroll = true
     @AppStorage("dmTop") private var top = true
@@ -137,7 +137,7 @@ struct DanmakuPreferences: View {
         Form {
             Section { Toggle("显示弹幕",isOn:$enabled) }
             Section("显示") {
-                SliderRow(title:"不透明度",value:$opacity,range:0.1...1,step:0.1,suffix:"")
+                SliderRow(title:"不透明度",value:$opacity,range:0.1...1,step:0.05,suffix:"")
                 SliderRow(title:"字号",value:$fontSize,range:10...30,step:1,suffix:"")
                 SliderRow(title:"经过屏幕时间",value:$duration,range:3...15,step:1,suffix:" 秒")
                 SliderRow(title:"显示区域",value:$area,range:0.25...1,step:0.25,suffix:"")

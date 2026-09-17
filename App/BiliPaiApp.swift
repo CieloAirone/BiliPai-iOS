@@ -67,8 +67,14 @@ struct VideoGrid: View {
     @AppStorage("filterEnabled") private var filtering = false
     @AppStorage("filterKeywords") private var keywords = ""
     @AppStorage("blockedAuthors") private var authors = ""
+    @AppStorage("rulePlugins") private var rulePlugins = "[]"
+    @AppStorage("disabledPlugins") private var disabledPlugins = ""
     private var visible: [Video] {
-        videos.filter { !Preferences.lines(authors).contains($0.author) && (!filtering || !Preferences.lines(keywords).contains(where:$0.title.localizedCaseInsensitiveContains)) }
+        let plugins = RulePlugins.decode(rulePlugins).filter { $0.type == "feed" && !Preferences.lines(disabledPlugins).contains($0.id) }
+        return videos.filter { video in
+            let fields = ["title":JSON(video.title),"owner.name":JSON(video.author),"stat.view":JSON(video.views)]
+            return !Preferences.lines(authors).contains(video.author) && (!filtering || !Preferences.lines(keywords).contains(where:video.title.localizedCaseInsensitiveContains)) && !plugins.contains { $0.hides(fields) }
+        }
     }
     let videos: [Video]
     var body: some View {
