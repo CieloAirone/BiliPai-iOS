@@ -29,6 +29,7 @@ targets:
       path: Generated/Info.plist
       properties:
         UIBackgroundModes: [audio]
+        NSFaceIDUsageDescription: 用于在查看历史记录与收藏前验证身份
         NSAppTransportSecurity:
           NSAllowsArbitraryLoadsForMedia: true
           NSAllowsLocalNetworking: true

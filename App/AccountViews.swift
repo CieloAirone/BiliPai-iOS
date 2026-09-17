@@ -13,9 +13,9 @@ struct ProfileView: View {
                 if !session.loggedIn { NavigationLink("登录账号") { LoginView() } }
             }
             Section {
-                NavigationLink { HistoryView() } label: { Label("历史记录", systemImage: "clock") }
+                NavigationLink { PrivacyGate { HistoryView() } } label: { Label("历史记录", systemImage: "clock") }
                 NavigationLink { FeedView(mode: "稍后再看").navigationTitle("稍后再看") } label: { Label("稍后再看", systemImage: "text.badge.plus") }
-                NavigationLink { FavoritesView() } label: { Label("我的收藏", systemImage: "star") }
+                NavigationLink { PrivacyGate { FavoritesView() } } label: { Label("我的收藏", systemImage: "star") }
                 if session.loggedIn {
                     NavigationLink { WebScreen(url: URL(string: "https://space.bilibili.com/\(session.mid)")!, title: "我的空间") } label: { Label("我的空间 · 网页", systemImage: "person.crop.rectangle") }
                 }

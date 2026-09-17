@@ -13,7 +13,7 @@ struct ListenView: View {
                 Cover(url: selected.cover).frame(width: 190, height: 190).clipShape(Circle()).overlay(Circle().stroke(.thinMaterial, lineWidth: 16)).padding(.top, 24)
                 Text(selected.title).font(.headline).multilineTextAlignment(.center).lineLimit(2).padding(.horizontal)
                 Text(selected.author).foregroundStyle(.secondary)
-                NativePlayer(player: playback.player).frame(height: 75)
+                NativePlayer(player: playback.player, onRelease: { playback.stop(bvid: selected.id, cid: cid) }).frame(height: 75)
                 HStack(spacing: 40) {
                     Button { skip(-1) } label: { Image(systemName:"backward.end.fill") }.accessibilityLabel("上一首")
                     Button { playback.player.play() } label: { Image(systemName:"play.fill") }.accessibilityLabel("播放")
@@ -37,12 +37,12 @@ struct ListenView: View {
         }.navigationTitle("听视频").navigationBarTitleDisplayMode(.inline).task { await load() }
         .task(id: selectionID) {
             guard let video = queue.first(where: { $0.id == selectionID }) else { return }
+            if selected?.id == video.id && playback.player.currentItem != nil { return }
             if let old = selected { playback.stop(bvid: old.id, cid: cid) }
             selected = video
             do { let data = try await BiliAPI.shared.request("/x/web-interface/view", ["bvid":video.id]); cid = data["cid"].string; await playback.open(bvid:video.id,cid:cid,title:video.title) }
             catch { if !Task.isCancelled { self.error = error.localizedDescription } }
         }
-        .onDisappear { if let selected { playback.stop(bvid:selected.id,cid:cid) } }
     }
     private func load() async {
         error = ""

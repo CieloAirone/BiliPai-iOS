@@ -50,14 +50,14 @@ struct LiveRoomView: View {
     @State private var loading = false
     var body: some View {
         ScrollView {
-            NativePlayer(player: player).frame(height: 240)
+            NativePlayer(player: player, onRelease: { player.pause(); player.replaceCurrentItem(with: nil) }).frame(height: 240)
             VStack(alignment: .leading, spacing: 18) {
                 Text(room["title"].string).font(.title3.bold()); Text(room["uname"].string).foregroundStyle(.secondary)
                 if loading { ProgressView("连接直播间") }
                 if !error.isEmpty { Text(error).foregroundStyle(.red); Button("重新连接") { Task { await load() } } }
                 NavigationLink("直播间互动 · 网页") { WebScreen(url: URL(string: "https://live.bilibili.com/\(room["roomid"].string)")!, title: "直播互动") }
             }.padding()
-        }.navigationBarTitleDisplayMode(.inline).task { await load() }.onDisappear { player.pause(); player.replaceCurrentItem(with: nil) }
+        }.navigationBarTitleDisplayMode(.inline).task { if player.currentItem == nil { await load() } }
     }
     private func load() async {
         loading = true; error = ""; defer { loading = false }
@@ -107,7 +107,7 @@ struct EpisodeView: View {
     @State private var playback = Playback()
     var body: some View {
         VStack(spacing: 20) {
-            NativePlayer(player: playback.player).frame(height: 240)
+            NativePlayer(player: playback.player, onRelease: { playback.stop(bvid: episode["bvid"].string, cid: episode["cid"].string) }).frame(height: 240)
             Text(episode["long_title"].string).font(.headline)
             if playback.loading { ProgressView() }
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }
@@ -115,6 +115,6 @@ struct EpisodeView: View {
             Spacer()
         }.navigationBarTitleDisplayMode(.inline).task {
             await playback.open(bvid: episode["bvid"].string, cid: episode["cid"].string, title: episode["long_title"].string, episodeID: episode["id"].string)
-        }.onDisappear { playback.stop(bvid: episode["bvid"].string, cid: episode["cid"].string) }
+        }
     }
 }

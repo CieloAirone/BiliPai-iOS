@@ -1,9 +1,10 @@
 import SwiftUI
 
 @main struct BiliPaiApp: App {
-    init() { Preferences.register() }
+    init() { Preferences.register(); CacheMaintenance.apply(); _ = NetworkState.shared }
     @State private var session = Session()
     @AppStorage("accent") private var accent = "blue"
+    @AppStorage("customAccent") private var customAccent = "007AFF"
     @AppStorage("fontScale") private var fontScale = 1.0
     @AppStorage("reduceMotion") private var reduceMotion = false
     @AppStorage("appearance") private var appearance = "system"
@@ -12,7 +13,7 @@ import SwiftUI
             RootView().environment(session).tint(Preferences.tint)
                 .environment(\.dynamicTypeSize, fontScale < 0.95 ? .small : fontScale < 1.05 ? .large : fontScale < 1.2 ? .xLarge : .xxxLarge)
                 .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
-                .onChange(of: accent) { _, _ in }
+                .onChange(of: accent) { _, _ in }.onChange(of: customAccent) { _, _ in }
                 .preferredColorScheme(appearance == "dark" ? .dark : appearance == "light" ? .light : nil)
                 .task { await session.refresh() }
         }
@@ -23,14 +24,19 @@ struct RootView: View {
     @AppStorage("showHistoryTab") private var history = true
     @AppStorage("showListenTab") private var listen = true
     @AppStorage("haptics") private var haptics = true
+    @AppStorage("bottomOrder") private var order = "0,1,2,3,4"
     @State private var tab = 0
     var body: some View {
         TabView(selection:$tab) {
-            NavigationStack { HomeView() }.tabItem { Label("推荐", systemImage: "house.fill") }.tag(0)
-            if dynamic { NavigationStack { DynamicView() }.tabItem { Label("动态", systemImage: "bolt.horizontal.circle") }.tag(1) }
-            if history { NavigationStack { HistoryView() }.tabItem { Label("历史", systemImage: "clock.arrow.circlepath") }.tag(2) }
-            if listen { NavigationStack { ListenView() }.tabItem { Label("听视频", systemImage: "headphones") }.tag(3) }
-            NavigationStack { ProfileView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }.tag(4)
+            ForEach(NavigationOptions.bottomItems(order),id:\.self) { item in
+                switch item {
+                case 0: NavigationStack { HomeView() }.tabItem { Label("推荐",systemImage:"house.fill") }.tag(0)
+                case 1: if dynamic { NavigationStack { DynamicView() }.tabItem { Label("动态",systemImage:"bolt.horizontal.circle") }.tag(1) }
+                case 2: if history { NavigationStack { PrivacyGate { HistoryView() } }.tabItem { Label("历史",systemImage:"clock.arrow.circlepath") }.tag(2) }
+                case 3: if listen { NavigationStack { ListenView() }.tabItem { Label("听视频",systemImage:"headphones") }.tag(3) }
+                default: NavigationStack { ProfileView() }.tabItem { Label("我的",systemImage:"person.crop.circle") }.tag(4)
+                }
+            }
         }.onChange(of: tab) { _, _ in if haptics { UISelectionFeedbackGenerator().selectionChanged() } }
     }
 }
@@ -86,6 +92,7 @@ struct VideoGrid: View {
 struct HomeView: View {
     @Environment(Session.self) private var session
     @AppStorage("defaultFeed") private var category = "推荐"
+    @AppStorage("topTabs") private var topTabs = "推荐,热门,排行榜,直播,番剧"
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 12) {
@@ -96,17 +103,13 @@ struct HomeView: View {
                 NavigationLink { SettingsView() } label: { Image(systemName: "gearshape").frame(width: 36, height: 36) }.accessibilityLabel("设置")
             }.padding(.horizontal)
             HStack(spacing: 4) {
-                ForEach(["推荐", "热门", "排行榜"], id: \.self) { tab in
-                    Button { category = tab } label: {
-                        HomeCategoryLabel(title: tab, selected: category == tab)
-                    }.buttonStyle(.plain)
+                ForEach(NavigationOptions.topItems(topTabs), id: \.self) { tab in
+                    if ["推荐","热门","排行榜"].contains(tab) {
+                        Button { category = tab } label: { HomeCategoryLabel(title:tab,selected:category == tab) }.buttonStyle(.plain)
+                    } else {
+                        NavigationLink { CatalogView(live:tab == "直播") } label: { HomeCategoryLabel(title:tab) }.buttonStyle(.plain)
+                    }
                 }
-                NavigationLink { CatalogView(live: true) } label: {
-                    HomeCategoryLabel(title: "直播")
-                }.buttonStyle(.plain)
-                NavigationLink { CatalogView(live: false) } label: {
-                    HomeCategoryLabel(title: "番剧")
-                }.buttonStyle(.plain)
             }.padding(.horizontal, 16)
             FeedView(mode: category).id(category)
         }.toolbar(.hidden, for: .navigationBar)

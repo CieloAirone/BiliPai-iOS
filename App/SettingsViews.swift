@@ -33,10 +33,10 @@ enum SettingCategory: String, CaseIterable, Identifiable {
     var keywords: String {
         switch self {
         case .appearance:return "主题 明暗 颜色 字体 显示大小"
-        case .playback:return "画质 倍速 自动播放 进度 弹幕 透明度 字号 速度 屏蔽 画中画 后台"
+        case .playback:return "画质 倍速 自动播放 进度 弹幕 透明度 字号 速度 屏蔽 画中画 后台 评论 回复 无线 移动 网络 省流量 音质 播完"
         case .home:return "卡片 网格 列数 作者 刷新 推荐"
-        case .navigation:return "底栏 动态 历史 听视频 动画 触感"
-        case .privacy:return "无痕 搜索历史 播放记录 黑名单 权限"
+        case .navigation:return "底栏 动态 历史 听视频 动画 触感 顶部标签 排序 文字复制"
+        case .privacy:return "无痕 搜索历史 播放记录 黑名单 权限 隐私验证 人脸 指纹"
         case .storage:return "缓存 分享 导入 导出 备份 恢复 WebDAV"
         case .plugins:return "规则 过滤 关键词 推荐"
         case .about:return "版本 更新 许可 日志 源码"
@@ -78,12 +78,17 @@ struct SettingsCategoryView: View {
 struct AppearancePreferences: View {
     @AppStorage("appearance") private var appearance = "system"
     @AppStorage("accent") private var accent = "blue"
+    @AppStorage("customAccent") private var customAccent = "007AFF"
     @AppStorage("fontScale") private var fontScale = 1.0
     var body: some View {
         Form {
             Section("界面与主题") {
                 Picker("主题模式",selection:$appearance) { Text("跟随系统").tag("system");Text("浅色模式").tag("light");Text("深色模式").tag("dark") }.accessibilityIdentifier("settings.appearance.mode")
-                Picker("主题颜色",selection:$accent) { Text("iOS 蓝色").tag("blue");Text("樱花粉").tag("pink");Text("薄荷绿").tag("green");Text("紫色").tag("purple");Text("橙色").tag("orange") }
+                Picker("主题颜色",selection:$accent) { Text("iOS 蓝色").tag("blue");Text("樱花粉").tag("pink");Text("薄荷绿").tag("green");Text("紫色").tag("purple");Text("橙色").tag("orange");Text("自定义").tag("custom") }
+            }
+            Section("自定义主题颜色") {
+                ColorPicker("主题色",selection:Binding(get:{ Color(hex:customAccent) },set:{ customAccent = $0.hexRGB;accent = "custom" }),supportsOpacity:false)
+                HStack { Text("HEX");TextField("007AFF",text:Binding(get:{ customAccent },set:{ let value = $0.replacingOccurrences(of:"#",with:"").uppercased();if value.matchesHexColor { customAccent = value;accent = "custom" } })).textInputAutocapitalization(.characters).autocorrectionDisabled() }
             }
             Section("字体与显示大小") {
                 SliderRow(title:"字体缩放",value:$fontScale,range:0.8...1.4,step:0.1,suffix:"×")
@@ -102,6 +107,16 @@ struct SliderRow: View {
     var body: some View { VStack(alignment:.leading) { HStack { Text(title);Spacer();Text(String(format:"%.1f",value)+suffix).foregroundStyle(.secondary).monospacedDigit() };Slider(value:$value,in:range,step:step).accessibilityLabel(title) } }
 }
 struct PlaybackPreferences: View {
+    @AppStorage("commentSort") private var commentSort = 2
+    @AppStorage("commentPreviewCount") private var previewCount = 3
+    @AppStorage("autoHighestQuality") private var highest = false
+    @AppStorage("mobileQuality") private var mobileQuality = 64
+    @AppStorage("audioQuality") private var audioQuality = 30280
+    @AppStorage("dataSaver") private var dataSaver = "off"
+    @AppStorage("rememberSpeed") private var rememberSpeed = false
+    @AppStorage("audioFocus") private var audioFocus = true
+    @AppStorage("completion") private var completion = "auto"
+    @AppStorage("expandDescription") private var expandDescription = false
     @AppStorage("autoplay") private var autoplay = true
     @AppStorage("rememberPosition") private var remember = true
     @AppStorage("quality") private var quality = 80
@@ -110,16 +125,41 @@ struct PlaybackPreferences: View {
     @AppStorage("backgroundPlayback") private var background = true
     var body: some View {
         Form {
-            Section("播放与画质") {
-                Picker("默认画质",selection:$quality) { Text("360P").tag(16);Text("480P").tag(32);Text("720P").tag(64);Text("1080P").tag(80);Text("1080P 高码率").tag(112);Text("1080P60").tag(116);Text("4K").tag(120) }
-                Text("按账号和视频权限选择不高于目标的可用 AVC 画质；设置不会解锁会员权限。").font(.caption).foregroundStyle(.secondary)
-                Picker("默认倍速",selection:$speed) { ForEach([0.5,0.75,1,1.25,1.5,2],id:\.self) { Text(String(format:"%g×",$0)).tag($0) } }
-                Toggle("自动播放",isOn:$autoplay).accessibilityIdentifier("settings.autoplay")
+            Section("播放行为") {
+                Toggle("进入视频自动播放",isOn:$autoplay).accessibilityIdentifier("settings.autoplay")
                 Toggle("记忆播放进度",isOn:$remember)
+                Toggle("记忆上次播放速度",isOn:$rememberSpeed)
+                Picker("默认播放速度",selection:$speed) { ForEach([0.5,0.75,1,1.25,1.5,2],id:\.self) { Text(String(format:"%g×",$0)).tag($0) } }.disabled(rememberSpeed)
+                Picker("视频播完后",selection:$completion) { Text("自动").tag("auto");Text("暂停").tag("pause");Text("单集循环").tag("loop") }
+                Text("自动：分 P 视频继续下一集，普通单视频播完暂停。").font(.caption).foregroundStyle(.secondary)
             }
-            Section("小窗与后台") { Toggle("画中画",isOn:$pip);Toggle("后台播放",isOn:$background) }
+            Section("网络与画质") {
+                Toggle("自动最高画质",isOn:$highest)
+                QualityPicker(title:"无线网络默认画质",selection:$quality).disabled(highest)
+                QualityPicker(title:"移动网络默认画质",selection:$mobileQuality).disabled(highest)
+                Picker("默认音质",selection:$audioQuality) { Text("64K").tag(30216);Text("132K").tag(30232);Text("192K").tag(30280) }
+                Text("使用账号权限范围内可播放的 AVC 视频与 AAC 音频。").font(.caption).foregroundStyle(.secondary)
+            }
+            Section("省流量模式") {
+                Picker("省流量模式",selection:$dataSaver) { Text("关闭").tag("off");Text("仅移动网络").tag("cellular");Text("始终开启").tag("always") }
+                Text("启用时将新视频限制为最高 480P，优先于自动最高画质。").font(.caption).foregroundStyle(.secondary)
+            }
+            Section("小窗与后台") { Toggle("画中画",isOn:$pip);Toggle("后台播放",isOn:$background);Toggle("播放时暂停其他应用的声音",isOn:$audioFocus) }
             Section { NavigationLink("弹幕设置") { DanmakuPreferences() } }
+            Section("互动与评论") {
+                Toggle("默认展开视频简介",isOn:$expandDescription)
+                Picker("评论排序",selection:$commentSort) { Text("最热").tag(2);Text("最新").tag(0) }
+                Stepper("评论回复预览：\(previewCount) 条",value:$previewCount,in:0...5)
+                Text("点按查看全部回复可进入楼中楼，继续加载后续回复。").font(.caption).foregroundStyle(.secondary)
+            }
         }
+    }
+}
+struct QualityPicker:View {
+    let title:String
+    @Binding var selection:Int
+    var body:some View {
+        Picker(title,selection:$selection) { Text("360P").tag(16);Text("480P").tag(32);Text("720P").tag(64);Text("1080P").tag(80);Text("1080P 高码率").tag(112);Text("1080P60").tag(116);Text("4K").tag(120) }
     }
 }
 struct DanmakuPreferences: View {
@@ -174,20 +214,26 @@ struct NavigationPreferences: View {
     @AppStorage("showListenTab") private var listen = true
     @AppStorage("haptics") private var haptics = true
     @AppStorage("reduceMotion") private var reduce = false
+    @AppStorage("copyText") private var copyText = false
     var body: some View {
         Form {
             Section("底栏项目") { Toggle("动态",isOn:$dynamic);Toggle("历史",isOn:$history);Toggle("听视频",isOn:$listen);Text("推荐和我的始终保留，设置入口不会被隐藏。").font(.caption).foregroundStyle(.secondary) }
-            Section("交互") { Toggle("触感反馈",isOn:$haptics);Toggle("减少动态效果",isOn:$reduce) }
+            Section("导航与标签") {
+                NavigationLink("顶部标签管理") { TopTabPreferences() }
+                NavigationLink("底栏顺序") { BottomOrderPreferences() }
+            }
+            Section("动效与触感") { Toggle("触感反馈",isOn:$haptics);Toggle("减少动态效果",isOn:$reduce);Toggle("点按文字复制",isOn:$copyText);Text("点按视频标题、简介与评论文字复制内容。").font(.caption).foregroundStyle(.secondary) }
         }
     }
 }
 struct PrivacyPreferences: View {
     @AppStorage("privacyMode") private var privacy = false
+    @AppStorage("privateAuthentication") private var authentication = false
     @AppStorage("blockedAuthors") private var authors = ""
     @State private var clear = false
     var body: some View {
         Form {
-            Section { Toggle("隐私无痕",isOn:$privacy);Text("不保存或读取本地搜索历史与播放位置；此选项不会清除 B 站服务器已有的历史记录。").font(.caption).foregroundStyle(.secondary) }
+            Section { Toggle("不记录历史",isOn:$privacy);Toggle("进入隐私内容时验证",isOn:$authentication);Text("不保存或读取本地搜索历史与播放位置；此选项不会清除 B 站服务器已有的历史记录。").font(.caption).foregroundStyle(.secondary) }
             Section("历史记录") { Button("清除本地搜索和播放记录",role:.destructive) { clear = true } }
             Section("已屏蔽的 UP 主 · 每行一个完整名称") { TextEditor(text:$authors).frame(minHeight:110).autocorrectionDisabled();Text("在视频列表中隐藏匹配作者，不修改 B 站账号黑名单。").font(.caption).foregroundStyle(.secondary) }
             Section("权限管理") { Link("打开系统权限设置",destination:URL(string:UIApplication.openSettingsURLString)!);Text("相册、通知等权限仅在对应能力使用时请求。").font(.caption).foregroundStyle(.secondary) }
@@ -195,6 +241,8 @@ struct PrivacyPreferences: View {
     }
 }
 struct StoragePreferences: View {
+    @AppStorage("cacheDays") private var cacheDays = 0
+    @AppStorage("cacheLimit") private var cacheLimit = 256
     @State private var exporting = false
     @State private var importing = false
     @State private var document = SettingsDocument(data:Data())
@@ -207,6 +255,9 @@ struct StoragePreferences: View {
             Section("缓存") {
                 LabeledContent("网络缓存",value:ByteCountFormatter.string(fromByteCount:Int64(cacheSize),countStyle:.file))
                 Button("清除缓存",role:.destructive) { clear = true }
+                Picker("自动清理缓存",selection:$cacheDays) { Text("关闭").tag(0);Text("每天").tag(1);Text("每周").tag(7);Text("每月").tag(30) }
+                Picker("缓存容量上限",selection:$cacheLimit) { ForEach([64,128,256,512,1024],id:\.self) { Text("\($0) MB").tag($0) } }
+                Text("在应用启动时清理可重新下载的网络缓存。").font(.caption).foregroundStyle(.secondary)
             }
             Section("云备份") { NavigationLink("WebDAV 云备份") { WebDAVSettings() } }
             Section("设置分享") {
@@ -214,7 +265,7 @@ struct StoragePreferences: View {
                 Button("从文件导入设置") { importing = true }
                 Text("仅包含界面、播放和过滤规则，不包含账号凭证、Cookie、搜索记录或播放历史。").font(.caption).foregroundStyle(.secondary)
             }
-        }.onAppear { cacheSize = URLCache.shared.currentDiskUsage + URLCache.shared.currentMemoryUsage }
+        }.onAppear { cacheSize = URLCache.shared.currentDiskUsage + URLCache.shared.currentMemoryUsage }.onChange(of:cacheLimit) { _,_ in CacheMaintenance.apply() }
         .fileExporter(isPresented:$exporting,document:document,contentType:.json,defaultFilename:"BiliPai-iOS-settings") { result in if case .failure(let error) = result { message = error.localizedDescription } }
         .fileImporter(isPresented:$importing,allowedContentTypes:[.json]) { result in
             do { let url = try result.get(); let access = url.startAccessingSecurityScopedResource();defer { if access { url.stopAccessingSecurityScopedResource() } };pending = try Preferences.validate(Data(contentsOf:url)) } catch { message = error.localizedDescription }
