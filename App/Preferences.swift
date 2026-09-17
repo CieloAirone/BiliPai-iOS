@@ -5,7 +5,7 @@ import CoreFoundation
 // Only settings with a runtime consumer belong in this allowlist.
 enum Preferences {
     static let defaults: [String: Any] = [
-        "autoHighestQuality":false, "mobileQuality":64, "audioQuality":30280, "dataSaver":"off",
+        "showReplyLoadedCount":true, "incrementalDynamicRefresh":false, "dynamicLayout":"list", "autoHighestQuality":false, "mobileQuality":64, "audioQuality":30280, "dataSaver":"off",
         "rememberSpeed":false, "lastSpeed":1.0, "audioFocus":true, "completion":"auto",
         "expandDescription":false, "copyText":false, "customAccent":"007AFF",
         "topTabs":"推荐,热门,排行榜,直播,番剧", "bottomOrder":"0,1,2,3,4",
@@ -41,8 +41,8 @@ enum Preferences {
               let root = try JSONSerialization.jsonObject(with:data) as? [String:Any],
               root["format"] as? String == "bilipai-ios-settings", root["version"] as? Int == 1,
               let values = root["values"] as? [String:Any] else { throw BiliError(message:"不是支持的 iOS 设置备份文件") }
-        let ranges: [String:ClosedRange<Double>] = ["cacheDays":0...30,"cacheLimit":64...1024,"lastSpeed":0.5...2,"commentPreviewCount":0...5,"fontScale":0.8...1.4,"defaultSpeed":0.5...2,"dmOpacity":0.1...1,"dmFontSize":10...30,"dmDuration":3...15,"dmLimit":6...100,"dmArea":0.25...1,"gridColumns":0...4,"cardWidth":120...260,"feedCount":10...50]
-        let enums: [String:[String]] = ["completion":["auto","pause","loop"],"dataSaver":["off","cellular","always"],"appearance":["system","light","dark"],"accent":["blue","pink","green","purple","orange","custom"],"defaultFeed":["推荐","热门","排行榜"]]
+        let ranges: [String:ClosedRange<Double>] = ["cacheDays":0...30,"cacheLimit":64...1024,"lastSpeed":0.5...2,"commentPreviewCount":0...10,"fontScale":0.8...1.4,"defaultSpeed":0.5...2,"dmOpacity":0.1...1,"dmFontSize":10...30,"dmDuration":3...15,"dmLimit":6...100,"dmArea":0.25...1,"gridColumns":0...4,"cardWidth":120...260,"feedCount":10...50]
+        let enums: [String:[String]] = ["dynamicLayout":["list","grid"],"completion":["auto","pause","loop"],"dataSaver":["off","cellular","always"],"appearance":["system","light","dark"],"accent":["blue","pink","green","purple","orange","custom"],"defaultFeed":["推荐","热门","排行榜"]]
         var validated: [String:Any] = [:]
         for (key,value) in values {
             guard let expected = defaults[key] else { throw BiliError(message:"备份包含未知设置：\(key)") }

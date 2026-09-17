@@ -63,10 +63,19 @@ struct SettingsCategoryView: View {
     var body: some View {
         Group {
             switch category {
-            case .appearance: AppearancePreferences()
-            case .playback: PlaybackPreferences()
-            case .home: HomePreferences()
-            case .navigation: NavigationPreferences()
+            case .appearance:
+                Form { Section("外观与主题") { NavigationLink("外观设置") { AppearancePreferences().navigationTitle("外观设置").navigationBarTitleDisplayMode(.inline) } } }
+            case .playback:
+                Form {
+                    Section("播放与画质") { NavigationLink("播放器设置") { PlaybackPreferences().navigationTitle("播放器设置").navigationBarTitleDisplayMode(.inline) } }
+                    Section("互动与评论") { NavigationLink("互动、评论与内容预览") { CommentPreferences() } }
+                }
+            case .home: HomeCategoryPreferences()
+            case .navigation:
+                Form {
+                    Section("导航") { NavigationLink("导航与标签") { NavigationPreferences().navigationTitle("导航与标签").navigationBarTitleDisplayMode(.inline) } }
+                    Section("交互与动效") { NavigationLink("动效与触感") { InteractionPreferences() } }
+                }
             case .privacy: PrivacyPreferences()
             case .storage: StoragePreferences()
             case .plugins: PluginPreferences()
@@ -107,8 +116,6 @@ struct SliderRow: View {
     var body: some View { VStack(alignment:.leading) { HStack { Text(title);Spacer();Text(String(format:"%.1f",value)+suffix).foregroundStyle(.secondary).monospacedDigit() };Slider(value:$value,in:range,step:step).accessibilityLabel(title) } }
 }
 struct PlaybackPreferences: View {
-    @AppStorage("commentSort") private var commentSort = 2
-    @AppStorage("commentPreviewCount") private var previewCount = 3
     @AppStorage("autoHighestQuality") private var highest = false
     @AppStorage("mobileQuality") private var mobileQuality = 64
     @AppStorage("audioQuality") private var audioQuality = 30280
@@ -116,7 +123,6 @@ struct PlaybackPreferences: View {
     @AppStorage("rememberSpeed") private var rememberSpeed = false
     @AppStorage("audioFocus") private var audioFocus = true
     @AppStorage("completion") private var completion = "auto"
-    @AppStorage("expandDescription") private var expandDescription = false
     @AppStorage("autoplay") private var autoplay = true
     @AppStorage("rememberPosition") private var remember = true
     @AppStorage("quality") private var quality = 80
@@ -146,12 +152,7 @@ struct PlaybackPreferences: View {
             }
             Section("小窗与后台") { Toggle("画中画",isOn:$pip);Toggle("后台播放",isOn:$background);Toggle("播放时暂停其他应用的声音",isOn:$audioFocus) }
             Section { NavigationLink("弹幕设置") { DanmakuPreferences() } }
-            Section("互动与评论") {
-                Toggle("默认展开视频简介",isOn:$expandDescription)
-                Picker("评论排序",selection:$commentSort) { Text("最热").tag(2);Text("最新").tag(0) }
-                Stepper("评论回复预览：\(previewCount) 条",value:$previewCount,in:0...5)
-                Text("点按查看全部回复可进入楼中楼，继续加载后续回复。").font(.caption).foregroundStyle(.secondary)
-            }
+
         }
     }
 }
@@ -212,9 +213,6 @@ struct NavigationPreferences: View {
     @AppStorage("showDynamicTab") private var dynamic = true
     @AppStorage("showHistoryTab") private var history = true
     @AppStorage("showListenTab") private var listen = true
-    @AppStorage("haptics") private var haptics = true
-    @AppStorage("reduceMotion") private var reduce = false
-    @AppStorage("copyText") private var copyText = false
     var body: some View {
         Form {
             Section("底栏项目") { Toggle("动态",isOn:$dynamic);Toggle("历史",isOn:$history);Toggle("听视频",isOn:$listen);Text("推荐和我的始终保留，设置入口不会被隐藏。").font(.caption).foregroundStyle(.secondary) }
@@ -222,7 +220,7 @@ struct NavigationPreferences: View {
                 NavigationLink("顶部标签管理") { TopTabPreferences() }
                 NavigationLink("底栏顺序") { BottomOrderPreferences() }
             }
-            Section("动效与触感") { Toggle("触感反馈",isOn:$haptics);Toggle("减少动态效果",isOn:$reduce);Toggle("点按文字复制",isOn:$copyText);Text("点按视频标题、简介与评论文字复制内容。").font(.caption).foregroundStyle(.secondary) }
+
         }
     }
 }
@@ -299,6 +297,48 @@ struct AboutPreferences: View {
                 Link("开源许可证",destination:URL(string:"https://github.com/CieloAirone/BiliPai-iOS/blob/main/LICENSE")!)
                 Link("反馈问题",destination:URL(string:"https://github.com/CieloAirone/BiliPai-iOS/issues")!)
                 Text("非原作者官方 iOS 发行版。本软件不提供任何担保。").font(.footnote).foregroundStyle(.secondary)
+            }
+        }
+    }
+}
+
+struct CommentPreferences:View {
+    @AppStorage("commentSort") private var sort = 2
+    @AppStorage("commentPreviewCount") private var previewCount = 3
+    @AppStorage("showReplyLoadedCount") private var loadedCount = true
+    @AppStorage("expandDescription") private var expanded = false
+    var body:some View {
+        Form {
+            Section("内容预览") { Toggle("默认展开视频简介",isOn:$expanded) }
+            Section("互动与评论") {
+                Picker("评论排序",selection:$sort) { Text("最热").tag(2);Text("最新").tag(0) }
+                Picker("评论回复预览",selection:$previewCount) { ForEach([3,5,8,10],id:\.self) { Text("\($0)条").tag($0) } }
+                Toggle("楼中楼已加载数量",isOn:$loadedCount)
+            }
+        }.navigationTitle("互动、评论与内容预览").navigationBarTitleDisplayMode(.inline)
+    }
+}
+struct InteractionPreferences:View {
+    @AppStorage("haptics") private var haptics = true
+    @AppStorage("reduceMotion") private var reduce = false
+    @AppStorage("copyText") private var copyText = false
+    var body:some View {
+        Form { Section("动效与触感") { Toggle("触感反馈",isOn:$haptics);Toggle("减少动态效果",isOn:$reduce);Toggle("点按文字复制",isOn:$copyText);Text("点按视频标题、简介与评论文字复制内容。").font(.caption).foregroundStyle(.secondary) } }
+            .navigationTitle("动效与触感").navigationBarTitleDisplayMode(.inline)
+    }
+}
+struct HomeCategoryPreferences:View {
+    @AppStorage("feedCount") private var count = 20
+    @AppStorage("incrementalDynamicRefresh") private var incremental = false
+    @AppStorage("dynamicLayout") private var layout = "list"
+    var body:some View {
+        Form {
+            Section("首页展示") { NavigationLink("首页样式与推荐卡片") { HomePreferences().navigationTitle("首页样式与推荐卡片").navigationBarTitleDisplayMode(.inline) } }
+            Section("推荐流与动态") {
+                Toggle("刷新时保留当前列表",isOn:$incremental)
+                Text("下拉刷新只把新动态加到顶部，不重新排列已看到的内容。").font(.caption).foregroundStyle(.secondary)
+                Picker("动态页面布局",selection:$layout) { Text("列表").tag("list");Text("网格").tag("grid") }
+                Stepper("首页刷新数量：\(count)",value:$count,in:10...50,step:10)
             }
         }
     }

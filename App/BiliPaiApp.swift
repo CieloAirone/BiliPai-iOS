@@ -10,7 +10,7 @@ import SwiftUI
     @AppStorage("appearance") private var appearance = "system"
     var body: some Scene {
         WindowGroup {
-            RootView().environment(session).tint(Preferences.tint)
+            appRoot.environment(session).tint(Preferences.tint)
                 .environment(\.dynamicTypeSize, fontScale < 0.95 ? .small : fontScale < 1.05 ? .large : fontScale < 1.2 ? .xLarge : .xxxLarge)
                 .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
                 .onChange(of: accent) { _, _ in }.onChange(of: customAccent) { _, _ in }
@@ -18,6 +18,14 @@ import SwiftUI
                 .task { await session.refresh() }
         }
     }
+    @ViewBuilder private var appRoot:some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--regression-fixtures") { RegressionFixtureRoot() } else { RootView() }
+        #else
+        RootView()
+        #endif
+    }
+
 }
 struct RootView: View {
     @AppStorage("showDynamicTab") private var dynamic = true

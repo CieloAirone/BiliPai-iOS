@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct DynamicView: View {
+    @AppStorage("incrementalDynamicRefresh") private var incremental = false
+    @AppStorage("dynamicLayout") private var layout = "list"
     @Environment(Session.self) private var session
     @State private var items: [JSON] = []
     @State private var offset = ""
@@ -10,7 +12,7 @@ struct DynamicView: View {
     var body: some View {
         ScrollView {
             if !session.loggedIn { ContentUnavailableView("登录后查看关注动态", systemImage: "person.crop.circle"); NavigationLink("登录") { LoginView() } }
-            LazyVStack(alignment: .leading, spacing: 20) {
+            LazyVGrid(columns:layout == "grid" ? [GridItem(.adaptive(minimum:280),alignment:.top)]:[GridItem(.flexible())],alignment:.leading,spacing:20) {
                 ForEach(items, id: \.rawID) { item in
                     DynamicCard(item: item)
                 }
@@ -18,15 +20,18 @@ struct DynamicView: View {
                 if !error.isEmpty { FailureView(message: error) { Task { await load(reset: true) } } }
                 if session.loggedIn && !busy && more { Button("加载更多") { Task { await load(reset: false) } } }
             }.padding()
-        }.navigationTitle("动态").task(id: session.revision) { if session.loggedIn { await load(reset: true) } else { items = [] } }
+        }.navigationTitle("动态").task(id: session.revision) { items = [];offset = "";more = true;if session.loggedIn { await load(reset: true) } }
             .refreshable { await load(reset: true) }
     }
     private func load(reset: Bool) async {
         guard !busy else { return }; busy = true; error = ""; defer { busy = false }
         do {
             let data = try await BiliAPI.shared.request("/x/polymer/web-dynamic/v1/feed/all", ["type":"all","offset":reset ? "" : offset])
-            var seen = Set<String>(); items = ((reset ? [] : items) + data["items"].array).filter { !$0.rawID.isEmpty && seen.insert($0.rawID).inserted }
-            offset = data["offset"].string; more = data["has_more"].int == 1
+            let preserve = reset && incremental && !items.isEmpty
+            let fetched = data["items"].array
+            let candidate = preserve ? fetched.filter { row in !items.contains(where:{ $0.rawID == row.rawID }) } + items : (reset ? []:items) + fetched
+            var seen = Set<String>();items = candidate.filter { !$0.rawID.isEmpty && seen.insert($0.rawID).inserted }
+            if !preserve { offset = data["offset"].string;more = data["has_more"].int == 1 }
         } catch { self.error = error.localizedDescription }
     }
 }

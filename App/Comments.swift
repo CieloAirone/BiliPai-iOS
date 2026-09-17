@@ -90,7 +90,7 @@ struct CommentSection: View {
     @AppStorage("commentSort") private var sort = 2
     @AppStorage("commentPreviewCount") private var previewCount = 3
     var body: some View {
-        VStack(alignment:.leading,spacing:12) {
+        LazyVStack(alignment:.leading,spacing:12) {
             HStack {
                 Text(pages.total > 0 ? "评论 \(pages.total)":"评论").font(.headline)
                 Spacer()
@@ -103,12 +103,7 @@ struct CommentSection: View {
                         NavigationLink {
                             CommentThreadView(oid:oid,root:comment)
                         } label: {
-                            VStack(alignment:.leading,spacing:7) {
-                                ForEach(comment.previews.prefix(previewCount)) { reply in
-                                    (Text(reply.user + "：").fontWeight(.medium) + Text(reply.message)).font(.caption).lineLimit(2).foregroundStyle(.secondary)
-                                }
-                                Text("查看全部 \(max(comment.replyCount,comment.previews.count)) 条回复 ›").font(.subheadline.weight(.medium)).foregroundStyle(.tint)
-                            }.frame(maxWidth:.infinity,alignment:.leading).padding(12).background(Color.secondary.opacity(0.07),in:RoundedRectangle(cornerRadius:10))
+                            CommentPreview(oid:oid,comment:comment,limit:previewCount)
                         }.buttonStyle(.plain).accessibilityIdentifier("comment.replies.\(comment.id)")
                     }
                 }
@@ -124,7 +119,11 @@ struct CommentSection: View {
 struct CommentThreadView: View {
     let oid:String
     let root:BiliComment
-    @State private var pages = CommentPages()
+    @State private var pages:CommentPages
+    init(oid:String,root:BiliComment,loader:@escaping CommentPages.Fetch = { path,params in try await BiliAPI.shared.request(path,params) }) {
+        self.oid = oid;self.root = root;_pages = State(initialValue:CommentPages(fetch:loader))
+    }
+    @AppStorage("showReplyLoadedCount") private var showLoaded = true
     private var loaded: [String:BiliComment] {
         var result = [root.id:root]
         for comment in root.previews + pages.items { result[comment.id] = comment }
@@ -135,7 +134,7 @@ struct CommentThreadView: View {
             LazyVStack(alignment:.leading,spacing:12) {
                 CommentRow(comment:root)
                 Divider()
-                Text("全部回复 · 已加载 \(pages.items.count) 条").font(.headline)
+                Text(showLoaded ? "全部回复 · 已加载 \(pages.items.count) 条":"全部回复 \(max(root.replyCount,pages.total)) 条").font(.headline)
                 ForEach(pages.items) { reply in
                     CommentRow(comment:reply,replyingTo:reply.parentID != root.id ? loaded[reply.parentID]:nil)
                     Divider()
@@ -148,5 +147,30 @@ struct CommentThreadView: View {
         }.navigationTitle("评论回复").navigationBarTitleDisplayMode(.inline)
             .task { if pages.page == 0 { await pages.load(oid:oid,root:root.id) } }
             .refreshable { await pages.load(oid:oid,root:root.id,reset:true) }
+    }
+}
+
+struct CommentPreview:View {
+    let oid:String
+    let comment:BiliComment
+    let limit:Int
+    @State private var additional:[BiliComment] = []
+    private var replies:[BiliComment] { additional.isEmpty ? comment.previews:additional }
+    var body:some View {
+        VStack(alignment:.leading,spacing:7) {
+            ForEach(replies.prefix(max(0,limit))) { reply in
+                (Text(reply.user + "：").fontWeight(.medium) + Text(reply.message)).font(.caption).lineLimit(2).foregroundStyle(.secondary)
+            }
+            Text("查看全部 \(max(comment.replyCount,comment.previews.count)) 条回复 ›").font(.subheadline.weight(.medium)).foregroundStyle(.tint)
+        }.frame(maxWidth:.infinity,alignment:.leading).padding(12).background(Color.secondary.opacity(0.07),in:RoundedRectangle(cornerRadius:10))
+            .task(id:limit) {
+                guard limit > comment.previews.count,comment.replyCount > comment.previews.count else { return }
+                do {
+                    let data = try await BiliAPI.shared.request("/x/v2/reply/reply",["oid":oid,"type":"1","root":comment.id,"pn":"1","ps":String(min(20,limit))])
+                    try Task.checkCancellation()
+                    var seen = Set<String>()
+                    additional = data["replies"].array.map { BiliComment($0) }.filter { !$0.id.isEmpty && seen.insert($0.id).inserted }
+                } catch { /* The full thread retains its explicit retry UI. */ }
+            }
     }
 }
