@@ -23,3 +23,15 @@
 - Settings.png、PlaybackSettings.png、WebDAVSettings.png 已更新为此构建的真实模拟器截图。
 - WebDAV 上传/恢复代码已接入，但未提供真实服务器凭证，尚未进行用户服务器端到端验证。
 - 设置差异详见 SETTINGS_PARITY.md，尚未达到全部设置/行为对等。
+
+## Build 6 设置补接与播放/评论回归
+
+- 构建提交：`d34460017477ea58099f8d04123d951657f46cee`。
+- Actions：https://github.com/CieloAirone/BiliPai-iOS/actions/runs/35224829337
+- 25 项单元测试、4 项 UI 测试全部通过，Release archive 成功。
+- 实际点击 AVKit 全屏按钮，确认播放状态及全屏界面；退出后媒体未释放，视频输出继续产生新帧。截图 `NativeFullscreenVideo.png` 与 `VideoAfterFullscreen.png` 使用 60 秒合成视频，不是实际 B 站视频源的全屏验收。
+- 楼中楼以 20+1 条测试数据验证第二页加载、父回复引用及末页按钮消失。截图 `CommentReplyParent.png`。
+- 真实公开接口抽查：主评论 code 0；一条 54 条回复的根评论，回复接口首批返回 20 条，code 0。不使用用户凭证；不证明所有视频/登录/风控状态。
+- Home / HomeDark / Settings / PlaybackSettings / WebDAVSettings 等截图更新为此次构建。
+- IPA 版本 `0.1.0 (6)`，包标识 `fun.caservice.bilipai.ios`；SHA256 `afe00bf92f5f281269f383d8b836f76ba3fa6be851b3a34421c0bcaa3827661c`。
+- 全部 Android 设置与视觉一致性仍未完成；真机、PiP、用户 WebDAV、生物识别与网络切换需继续验收。
