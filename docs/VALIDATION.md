@@ -51,3 +51,15 @@ Build 8：30 项单元测试、8 项 UI 测试通过；自动全屏退出后视�
 构建：https://github.com/CieloAirone/BiliPai-iOS/actions/runs/35245920283
 提交：b41425b40d9d079eb5fb57540a608464b4ff3f6a
 版本：0.1.0 (8)；SHA256：f23fb26dfb0942014ddbdd0ad06f3f29e5d95e7887acba533d7e5a4ba0b9cd5b
+
+## Build 9 原生空间、卡片与互动
+
+- 提交：`932ea91661211a48f44ab8f9abe114212174cf7d`；Actions：https://github.com/CieloAirone/BiliPai-iOS/actions/runs/35252993389
+- 36 项单元测试、10 项 UI 测试全部通过；Release archive 成功。版本 `0.1.0 (9)`。
+- 单元测试新增：空间分页/失败重试/排序重置/重复动态和停滞游标、旧视频缓存兼容、时长格式、评论 root/parent 关系、收藏夹差量提交。
+- UI 测试新增：原生空间投稿/动态切换、三种卡片比例和时长展示。固定数据素材，无真实账号写入。
+- 评论分页在接入回复按钮后曾出现尾部控件缺失；两次失败构建没有发布。将分页区域移出 LazyVStack、独立观察 CommentPages 后，原有第二页和父回复引用断言通过，未放宽断言。
+- 更新截图：Settings、NativeSpace、VideoCards-16x9/4x3/16x10、CommentReplyParent。
+- IPA SHA256：`abbdcf8179fb659c5b50e9dc4e36d1820e28f97e9b3e4859af4c86b9438dd2ae`，已核对 IPA 内 Info.plist 版本及随包校验文件。
+- 公开资料 WBI 接口 code 0；投稿及原版聚合备用接口在当前网络 HTTP 412，不能宣称真实空间投稿已验收。关注/评论/收藏写入需用户在已登录设备验证。
+- 全量设置与功能仍未对等，见 PARITY.md；本版不是完整移植完成版。
