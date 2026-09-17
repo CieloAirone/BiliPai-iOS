@@ -13,6 +13,7 @@ struct ProfileView: View {
                 if !session.loggedIn { NavigationLink("登录账号") { LoginView() } }
             }
             Section {
+                NavigationLink { FollowingsView() } label: { Label("我的关注",systemImage:"person.2") }
                 NavigationLink { PrivacyGate { HistoryView() } } label: { Label("历史记录", systemImage: "clock") }
                 NavigationLink { FeedView(mode: "稍后再看").navigationTitle("稍后再看") } label: { Label("稍后再看", systemImage: "text.badge.plus") }
                 NavigationLink { PrivacyGate { FavoritesView() } } label: { Label("我的收藏", systemImage: "star") }
