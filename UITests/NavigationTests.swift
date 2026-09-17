@@ -1,5 +1,22 @@
 import XCTest
 final class NavigationTests: XCTestCase {
+    func testFollowingsEntryAndFullscreenPreferencePersists() {
+        let app = XCUIApplication();app.launch()
+        app.tabBars.buttons["我的"].tap()
+        XCTAssertTrue(app.buttons["我的关注"].waitForExistence(timeout:5));app.buttons["我的关注"].tap()
+        XCTAssertTrue(app.staticTexts["登录后查看我的关注"].waitForExistence(timeout:5))
+        app.navigationBars.buttons.element(boundBy:0).tap()
+        app.buttons["设置"].tap();app.buttons["settings.播放与画质"].tap();app.buttons["播放器设置"].tap()
+        let toggle = app.switches["settings.autoFullscreen"]
+        XCTAssertTrue(toggle.waitForExistence(timeout:5))
+        let previous = toggle.value as? String
+        toggle.coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap()
+        app.terminate();app.launch()
+        app.tabBars.buttons["我的"].tap();app.buttons["设置"].tap();app.buttons["settings.播放与画质"].tap();app.buttons["播放器设置"].tap()
+        XCTAssertNotEqual(app.switches["settings.autoFullscreen"].value as? String,previous)
+        app.switches["settings.autoFullscreen"].coordinate(withNormalizedOffset:CGVector(dx:0.93,dy:0.5)).tap()
+    }
+
     func testNativeNavigationAndThemeSettings() {
         let app = XCUIApplication(); app.launch()
         XCTAssertTrue(app.tabBars.buttons["推荐"].waitForExistence(timeout: 15))
