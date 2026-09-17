@@ -46,3 +46,8 @@
 - 字幕测试提供两条同语言 AI/人工轨道，验证“仅非 AI”选择正确轨道，并通过 AVPlayerItemLegibleOutput 收到实际解码文本；VTT 转换检查时间戳、转义和异常时序。
 - iOS 会本地化字幕 displayName，因此不使用名称匹配，改用稳定的 HLS CHARACTERISTICS 轨道标识。
 - SHA256：`2dffbeb95f3e5ad3e9c9aad5701709294c63f905055886c8c1c170c37ad1f6b4`，版本 `0.1.0 (7)`。
+
+Build 8：30 项单元测试、8 项 UI 测试通过；自动全屏退出后视频帧继续更新，开关重启持久化，关注列表分页/重试/账号清空及未登录入口验证通过。尚未使用用户登录账号验收真实关注数据。
+构建：https://github.com/CieloAirone/BiliPai-iOS/actions/runs/35245920283
+提交：b41425b40d9d079eb5fb57540a608464b4ff3f6a
+版本：0.1.0 (8)；SHA256：f23fb26dfb0942014ddbdd0ad06f3f29e5d95e7887acba533d7e5a4ba0b9cd5b
