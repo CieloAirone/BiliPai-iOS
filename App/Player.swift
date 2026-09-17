@@ -7,15 +7,28 @@ import MediaPlayer
     var error = ""
     var loading = false
     var title = ""
+    var bridge: HLSBridge?
     var status: NSKeyValueObservation?
     func open(bvid: String, cid: String, title: String) async {
         loading = true; error = ""; self.title = title
         defer { loading = false }
         do {
-            let data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":"64","fnval":"1","fnver":"0","platform":"html5","high_quality":"1"], signed: true)
-            guard data["durl"].array.count == 1, let raw = data["durl"].array.first,
-                  let url = URL(string: raw["url"].string.replacingOccurrences(of: "http://", with: "https://")) else {
-                throw BiliError(message: "当前播放源未提供可用的单段 MP4；请使用网页播放入口。")
+            let data = try await BiliAPI.shared.request("/x/player/wbi/playurl", ["bvid":bvid,"cid":cid,"qn":"80","fnval":"4048","fnver":"0","fourk":"1"], signed: true)
+            let url: URL
+            bridge?.stop(); bridge = nil
+            let dashVideos = data["dash"]["video"].array.filter { $0["codecs"].string.hasPrefix("avc1") }.sorted { $0["id"].int > $1["id"].int }
+            if let selected = dashVideos.first {
+                async let videoTrack = DASHTrack.load(selected)
+                let selectedAudio = data["dash"]["audio"].array.filter { $0["codecs"].string.hasPrefix("mp4a") }.max { $0["bandwidth"].int < $1["bandwidth"].int }
+                let audioTrack: DASHTrack?
+                if let selectedAudio { audioTrack = try await DASHTrack.load(selectedAudio) } else { audioTrack = nil }
+                let localBridge = HLSBridge(video: try await videoTrack, audio: audioTrack)
+                bridge = localBridge; url = try await localBridge.start()
+            } else if data["durl"].array.count == 1, let source = data["durl"].array.first,
+                      let sourceURL = URL(string: source["url"].string.replacingOccurrences(of: "http://", with: "https://")) {
+                url = sourceURL
+            } else {
+                throw BiliError(message: "当前播放源没有受支持的 AVC / MP4 格式，请使用网页播放入口。")
             }
             try Task.checkCancellation()
             try AVAudioSession.sharedInstance().setCategory(.playback, mode: .moviePlayback)
@@ -34,7 +47,7 @@ import MediaPlayer
     func stop(bvid: String, cid: String) {
         let time = player.currentTime().seconds
         if time.isFinite { UserDefaults.standard.set(time, forKey: "position.\(bvid).\(cid)") }
-        player.pause(); player.replaceCurrentItem(with: nil); status = nil
+        player.pause(); player.replaceCurrentItem(with: nil); status = nil; bridge?.stop(); bridge = nil
     }
 }
 struct NativePlayer: UIViewControllerRepresentable {
