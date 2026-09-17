@@ -29,3 +29,11 @@ bash scripts/build-ios.sh archive
 ## 来源与许可
 
 接口路径、WBI 签名逻辑和功能结构参考上游提交 `d9470b11297ea7948e5711491b73f6756c170dfe`。保留原项目 `LICENSE` (GPLv3)。上游 README 同时标注非商业使用，与 LICENSE 文本表述不同；对外分发前应核实上游要求。本仓库包含完整源码，保留来源，不代表上游背书。
+
+## 模拟器实测截图
+
+以下为 GitHub macOS runner 上实际运行生成的截图，非设计图。
+
+<img src="docs/screenshots/Home.png" width="240" alt="原生推荐页" /> <img src="docs/screenshots/Profile.png" width="240" alt="个人中心" />
+
+测试范围及未验收项目见 [验证记录](docs/VALIDATION.md)。
