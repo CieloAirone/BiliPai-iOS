@@ -2,6 +2,7 @@ import SwiftUI
 import CoreImage.CIFilterBuiltins
 
 struct ProfileView: View {
+    @State private var relation = JSON()
     @Environment(Session.self) private var session
     var body: some View {
         List {
@@ -10,6 +11,14 @@ struct ProfileView: View {
                     Cover(url: session.avatar).frame(width: 60, height: 60).clipShape(Circle())
                     VStack(alignment: .leading, spacing: 6) { Text(session.name).font(.title3.bold()); Text(session.loggedIn ? "UID \(session.mid)" : "登录后同步你的 B 站内容").font(.caption).foregroundStyle(.secondary) }
                 }.padding(.vertical, 8)
+                if session.loggedIn {
+                    HStack {
+                        NavigationLink { FollowingsView() } label: {
+                            VStack(spacing:5) { Text(relation["following"].string.isEmpty ? "—":relation["following"].string).font(.headline);Text("关注").font(.caption).foregroundStyle(.secondary) }.frame(maxWidth:.infinity)
+                        }.buttonStyle(.plain)
+                        VStack(spacing:5) { Text(relation["follower"].string.isEmpty ? "—":relation["follower"].string).font(.headline);Text("粉丝").font(.caption).foregroundStyle(.secondary) }.frame(maxWidth:.infinity)
+                    }
+                }
                 if !session.loggedIn { NavigationLink("登录账号") { LoginView() } }
             }
             Section {
@@ -24,7 +33,17 @@ struct ProfileView: View {
             }
             Section { NavigationLink { SettingsView() } label: { Label("设置", systemImage: "gearshape") } }
             if session.loggedIn { Section { Button("退出登录", role: .destructive) { session.logout() } } }
-        }.navigationTitle("我的").refreshable { await session.refresh() }
+        }.navigationTitle("我的").refreshable { await session.refresh();await loadRelation() }
+            .task(id:session.mid) { await loadRelation() }
+    }
+    private func loadRelation() async {
+        let mid = session.mid
+        relation = JSON()
+        guard !mid.isEmpty else { return }
+        do {
+            let result = try await BiliAPI.shared.request("/x/relation/stat",["vmid":mid])
+            if !Task.isCancelled && session.mid == mid { relation = result }
+        } catch { /* Keep unknown counts as a dash; the list provides retry. */ }
     }
 }
 struct LoginView: View {
