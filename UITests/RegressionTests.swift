@@ -11,9 +11,9 @@ final class RegressionTests:XCTestCase {
         XCTAssertTrue(fullscreen.waitForExistence(timeout:5),app.debugDescription)
         fullscreen.tap()
         let pause = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'pause' OR label CONTAINS '暂停'")).firstMatch
-        if !pause.exists { app.otherElements["Video"].firstMatch.tap() }
+        if !pause.exists { app.coordinate(withNormalizedOffset:CGVector(dx:0.5,dy:0.5)).tap() }
         XCTAssertTrue(pause.waitForExistence(timeout:5),app.debugDescription)
-        XCTAssertGreaterThan(app.otherElements["Video"].firstMatch.frame.height,300)
+        XCTAssertFalse(app.navigationBars["播放器测试"].isHittable)
         let screenshot = XCTAttachment(screenshot:app.screenshot());screenshot.name = "NativeFullscreenVideo";screenshot.lifetime = .keepAlways;add(screenshot)
         let close = app.buttons.matching(NSPredicate(format:"label CONTAINS[c] 'full' OR label == 'Done' OR label == 'Close' OR label CONTAINS '退出全屏' OR label == '完成'")).firstMatch
         XCTAssertTrue(close.exists,app.debugDescription);close.tap()
