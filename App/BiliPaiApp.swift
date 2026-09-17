@@ -14,9 +14,10 @@ import SwiftUI
 struct RootView: View {
     var body: some View {
         TabView {
-            NavigationStack { HomeView() }.tabItem { Label("首页", systemImage: "house.fill") }
+            NavigationStack { HomeView() }.tabItem { Label("推荐", systemImage: "house.fill") }
             NavigationStack { DynamicView() }.tabItem { Label("动态", systemImage: "bolt.horizontal.circle") }
-            NavigationStack { DiscoveryView() }.tabItem { Label("发现", systemImage: "safari") }
+            NavigationStack { HistoryView() }.tabItem { Label("历史", systemImage: "clock.arrow.circlepath") }
+            NavigationStack { ListenView() }.tabItem { Label("听视频", systemImage: "headphones") }
             NavigationStack { ProfileView() }.tabItem { Label("我的", systemImage: "person.crop.circle") }
         }
     }
@@ -56,13 +57,28 @@ struct VideoGrid: View {
     }
 }
 struct HomeView: View {
+    @Environment(Session.self) private var session
     @State private var category = "推荐"
     var body: some View {
-        VStack(spacing: 0) {
-            Picker("分类", selection: $category) { ForEach(["推荐","热门","排行榜"], id: \.self) { Text($0) } }.pickerStyle(.segmented).padding(.horizontal)
+        VStack(spacing: 10) {
+            HStack(spacing: 12) {
+                NavigationLink { ProfileView() } label: { Cover(url: session.avatar).frame(width: 34, height: 34).clipShape(RoundedRectangle(cornerRadius: 10)) }.accessibilityLabel("个人中心")
+                NavigationLink { SearchView() } label: {
+                    HStack { Image(systemName: "magnifyingglass"); Text("搜索视频、UP主…").font(.subheadline); Spacer() }.foregroundStyle(.secondary).padding(10).background(.thinMaterial, in: Capsule())
+                }.accessibilityLabel("搜索")
+                NavigationLink { SettingsView() } label: { Image(systemName: "gearshape").frame(width: 36, height: 36) }.accessibilityLabel("设置")
+            }.padding(.horizontal)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(["推荐","热门","排行榜"], id: \.self) { tab in
+                        Button(tab) { category = tab }.font(.subheadline.weight(category == tab ? .bold:.regular)).padding(.horizontal, 18).padding(.vertical, 9).background(category == tab ? Color.blue.opacity(0.12):Color.clear, in: Capsule())
+                    }
+                    NavigationLink("直播") { CatalogView(live: true) }.padding(9)
+                    NavigationLink("番剧") { CatalogView(live: false) }.padding(9)
+                }.padding(.horizontal)
+            }
             FeedView(mode: category).id(category)
-        }.navigationTitle("BiliPai").navigationBarTitleDisplayMode(.inline)
-        .toolbar { ToolbarItem(placement: .topBarTrailing) { NavigationLink { SearchView() } label: { Image(systemName: "magnifyingglass") }.accessibilityLabel("搜索") } }
+        }.toolbar(.hidden, for: .navigationBar)
     }
 }
 struct FeedView: View {
@@ -75,7 +91,14 @@ struct FeedView: View {
     var body: some View {
         ScrollView {
             if videos.isEmpty && !error.isEmpty { FailureView(message: error) { Task { await load(reset: true) } } }
-            VideoGrid(videos: videos)
+            if mode == "推荐", let first = videos.first {
+                NavigationLink { VideoDetailView(video: first) } label: {
+                    Cover(url: first.cover).frame(height: 210).clipped()
+                        .overlay(alignment: .bottomLeading) { Text(first.title).font(.headline).foregroundStyle(.white).lineLimit(2).padding().frame(maxWidth: .infinity, alignment: .leading).background(.linearGradient(colors: [.clear,.black.opacity(0.8)], startPoint: .top, endPoint: .bottom)) }
+                        .clipShape(RoundedRectangle(cornerRadius: 16)).padding(.horizontal)
+                }.buttonStyle(.plain)
+                VideoGrid(videos: Array(videos.dropFirst()))
+            } else { VideoGrid(videos: videos) }
             if loading { ProgressView().padding() }
             else if !ended && !videos.isEmpty { Button("加载更多") { Task { await load(reset: false) } }.padding() }
             if !videos.isEmpty && !error.isEmpty { Text(error).font(.footnote).foregroundStyle(.red).padding() }
@@ -115,7 +138,14 @@ struct SearchView: View {
                     if !history.isEmpty { Button("清除历史", role: .destructive) { historyData = "[]" } }
                 }.frame(maxWidth: .infinity, alignment: .leading).padding()
             }
-            VideoGrid(videos: videos)
+            if mode == "推荐", let first = videos.first {
+                NavigationLink { VideoDetailView(video: first) } label: {
+                    Cover(url: first.cover).frame(height: 210).clipped()
+                        .overlay(alignment: .bottomLeading) { Text(first.title).font(.headline).foregroundStyle(.white).lineLimit(2).padding().frame(maxWidth: .infinity, alignment: .leading).background(.linearGradient(colors: [.clear,.black.opacity(0.8)], startPoint: .top, endPoint: .bottom)) }
+                        .clipShape(RoundedRectangle(cornerRadius: 16)).padding(.horizontal)
+                }.buttonStyle(.plain)
+                VideoGrid(videos: Array(videos.dropFirst()))
+            } else { VideoGrid(videos: videos) }
             if loading { ProgressView() }
             if !error.isEmpty { FailureView(message: error) { Task { await search(reset: true) } } }
             if !loading && !videos.isEmpty && !end { Button("加载更多") { Task { await search(reset: false) } }.padding() }
