@@ -102,15 +102,12 @@ import MediaPlayer
 struct NativePlayer: UIViewControllerRepresentable {
     @AppStorage("pip") private var pip = true
     @AppStorage("backgroundPlayback") private var background = true
-    @AppStorage("autoFullscreen") private var autoFullscreen = false
     let player: AVPlayer
-    var supportsAutoFullscreen = true
     var onRelease: () -> Void = {}
 
     @MainActor final class Coordinator: NSObject, AVPlayerViewControllerDelegate {
         var token: NSObjectProtocol?
         var background = true
-        var didEnterFullscreen = false
         private var presentationRetention:Coordinator?
         private func updatePresentationRetention() { presentationRetention = lifetime.fullScreen || lifetime.pictureInPicture ? self:nil }
         let lifetime: PlayerControllerLifetime
@@ -122,8 +119,6 @@ struct NativePlayer: UIViewControllerRepresentable {
             }
         }
         func playerViewController(_ playerViewController: AVPlayerViewController, willBeginFullScreenPresentationWithAnimationCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-            didEnterFullscreen = true
-            playerViewController.entersFullScreenWhenPlaybackBegins = false
             lifetime.fullScreen = true;updatePresentationRetention()
             coordinator.animate(alongsideTransition: nil) { [weak self] transition in
                 if transition.isCancelled { self?.lifetime.fullScreen = false; self?.lifetime.releaseIfDetached();self?.updatePresentationRetention() }
@@ -144,7 +139,6 @@ struct NativePlayer: UIViewControllerRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(player: player, onRelease: onRelease) }
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let vc = AVPlayerViewController()
-        vc.entersFullScreenWhenPlaybackBegins = supportsAutoFullscreen && autoFullscreen
         vc.player = player
         vc.delegate = context.coordinator
         vc.allowsPictureInPicturePlayback = pip
@@ -154,7 +148,6 @@ struct NativePlayer: UIViewControllerRepresentable {
         return vc
     }
     func updateUIViewController(_ vc: AVPlayerViewController, context: Context) {
-        vc.entersFullScreenWhenPlaybackBegins = supportsAutoFullscreen && autoFullscreen && !context.coordinator.didEnterFullscreen
         // Reassigning the player during a presentation transition is unnecessary.
         if vc.player !== player { vc.player = player }
         vc.allowsPictureInPicturePlayback = pip
@@ -195,7 +188,7 @@ struct VideoDetailView: View {
     @State private var descriptionExpanded = UserDefaults.standard.bool(forKey:"expandDescription")
     var body: some View {
         ScrollView {
-            NativePlayer(player: playback.player, onRelease: { playback.onFinished = nil;playback.stop(bvid: video.id, cid: cid) }).frame(height: 235).background(.black)
+            VideoPlayerSurface(player: playback.player, onRelease: { playback.onFinished = nil;playback.stop(bvid: video.id, cid: cid) }).frame(height: 235).background(.black)
                 .overlay { if danmakuEnabled && !cid.isEmpty { DanmakuOverlay(player: playback.player, cid: cid) } }
             if playback.loading { ProgressView("正在加载视频") }
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }

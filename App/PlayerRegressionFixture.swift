@@ -35,7 +35,7 @@ struct PlayerRegressionFixture:View {
     @State private var output = AVPlayerItemVideoOutput(pixelBufferAttributes:nil)
     var body:some View {
         VStack {
-            NativePlayer(player:player,onRelease:{ released = true;player.pause();player.replaceCurrentItem(with:nil) }).frame(height:260)
+            VideoPlayerSurface(player:player,onRelease:{ released = true;player.pause();player.replaceCurrentItem(with:nil) }).frame(height:260)
             Text(released ? "媒体已释放":"媒体仍加载").accessibilityIdentifier("fixture.lifetime")
             Text("\(frames)").accessibilityIdentifier("fixture.frames")
             Spacer()

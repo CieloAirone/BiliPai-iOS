@@ -109,7 +109,7 @@ struct EpisodeView: View {
     @State private var playback = Playback()
     var body: some View {
         VStack(spacing: 20) {
-            NativePlayer(player: playback.player, onRelease: { playback.stop(bvid: episode["bvid"].string, cid: episode["cid"].string) }).frame(height: 240)
+            VideoPlayerSurface(player: playback.player, onRelease: { playback.stop(bvid: episode["bvid"].string, cid: episode["cid"].string) }).frame(height: 240)
             Text(episode["long_title"].string).font(.headline)
             if playback.loading { ProgressView() }
             if !playback.error.isEmpty { Text(playback.error).font(.footnote).foregroundStyle(.red).padding() }
