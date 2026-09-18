@@ -9,6 +9,9 @@ struct VideoPlayerSurface:View {
     @State private var entered = false
     @State private var showing = false
     @State private var orientation: UIDeviceOrientation = .portrait
+    static func orientation(for size: CGSize) -> UIDeviceOrientation {
+        size.width > size.height ? .landscapeRight : .portrait
+    }
     var body:some View {
         NativePlayer(player:player,onRelease:onRelease)
             .task {
@@ -22,7 +25,7 @@ struct VideoPlayerSurface:View {
                         // do not remain in portrait.
                         if size.width > 10 && size.height > 10 {
                             entered = true
-                            orientation = size.width > size.height ? .landscapeRight : .portrait
+                            orientation = Self.orientation(for: size)
                             showing = true
                             player.playImmediately(atRate:PlaybackOptions.speed())
                             break
@@ -47,8 +50,10 @@ struct VideoPlayerSurface:View {
 
     private func applyOrientation(_ value: UIDeviceOrientation) {
         guard value == .landscapeRight || value == .portrait else { return }
-        UIDevice.current.setValue(value.rawValue, forKey: "orientation")
-        UINavigationController.attemptRotationToDeviceOrientation()
+        let mask: UIInterfaceOrientationMask = value == .landscapeRight ? .landscapeRight : .portrait
+        guard let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else { return }
+        scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask)) { _ in }
+        if #available(iOS 16.0, *) { scene.windows.first?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations() }
     }
 }
 
@@ -76,6 +81,7 @@ private struct BrightnessVolumeOverlay: View {
                         Image(systemName: hud.symbol).font(.system(size: 28, weight: .semibold))
                         Text("\(hud.title) \(Int((hud.value * 100).rounded()))%")
                             .font(.headline.monospacedDigit())
+                            .accessibilityIdentifier("player.hud.\(hud.title)")
                     }
                     .foregroundStyle(.white)
                     .padding(.horizontal, 24).padding(.vertical, 18)

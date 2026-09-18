@@ -19,4 +19,9 @@ final class CoreTests: XCTestCase {
     func testHistoryVideoNormalization() {
         let v = Video(JSON(["history":["bvid":"BVhistory"],"cover":"https://example.org/a","author_name":"UP"])); XCTAssertEqual(v.id,"BVhistory"); XCTAssertEqual(v.author,"UP")
     }
+    func testFullscreenOrientationUsesPresentationAspect() {
+        XCTAssertEqual(VideoPlayerSurface.orientation(for: CGSize(width: 1920, height: 1080)), .landscapeRight)
+        XCTAssertEqual(VideoPlayerSurface.orientation(for: CGSize(width: 1080, height: 1920)), .portrait)
+        XCTAssertEqual(VideoPlayerSurface.orientation(for: .zero), .portrait)
+    }
 }

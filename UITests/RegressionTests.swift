@@ -16,6 +16,20 @@ final class RegressionTests:XCTestCase {
         XCTAssertTrue(app.navigationBars["播放器测试"].exists)
     }
 
+    func testAutomaticFullscreenHasLeftBrightnessAndRightVolumeZonesWithHUD() {
+        let app = XCUIApplication(); app.launchArguments = ["--regression-fixtures","-autoFullscreen","YES"]; app.launch()
+        app.buttons["播放器测试"].tap()
+        XCTAssertTrue(app.buttons["退出自动全屏"].waitForExistence(timeout: 8), app.debugDescription)
+        // The overlay is explicitly two equal zones. Swipe in each half and
+        // require the corresponding live percentage HUD immediately.
+        let frame = app.windows.firstMatch.frame
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.32)), withVelocity: .default)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.亮度").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.32)), withVelocity: .default)
+        XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.音量").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
+        _ = frame // keep the intended full-screen coordinate reference explicit
+    }
+
     func testNativeFullscreenKeepsVideoFramesAndReturnsInline() {
         let app = XCUIApplication();app.launchArguments = ["--regression-fixtures"];app.launch()
         app.buttons["播放器测试"].tap()
