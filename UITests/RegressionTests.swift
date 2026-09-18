@@ -38,7 +38,7 @@ final class RegressionTests:XCTestCase {
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.音量").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
         _ = frame
-        let shot = XCTAttachment(screenshot:app.screenshot());shot.name = "LandscapeVolumeHUD";shot.lifetime = .keepAlways;add(shot)
+        let shot = XCTAttachment(screenshot:app.windows.firstMatch.screenshot());shot.name = "LandscapeVolumeHUD";shot.lifetime = .keepAlways;add(shot)
     }
 
     func testNativeFullscreenKeepsVideoFramesAndReturnsInline() {
