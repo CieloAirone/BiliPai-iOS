@@ -76,6 +76,7 @@ private struct BrightnessVolumeOverlay: View {
     @State private var startY: CGFloat?
     @State private var startValue: CGFloat = 0
     @State private var hud: HUD?
+    @State private var hideTask:Task<Void,Never>?
 
     private struct HUD: Equatable {
         let title: String
@@ -109,6 +110,7 @@ private struct BrightnessVolumeOverlay: View {
     private func zone(isBrightness: Bool, width: CGFloat) -> some View {
         Color.clear.frame(width:width).contentShape(Rectangle()).gesture(
             DragGesture(minimumDistance: 8).onChanged { drag in
+                hideTask?.cancel()
                 if startY == nil {
                     startY = drag.startLocation.y
                     startValue = isBrightness ? UIScreen.main.brightness : CGFloat(player.volume)
@@ -122,7 +124,11 @@ private struct BrightnessVolumeOverlay: View {
                 }
             }.onEnded { _ in
                 startY = nil
-                Task { try? await Task.sleep(for: .seconds(3)); await MainActor.run { withAnimation { hud = nil } } }
+                hideTask?.cancel()
+                hideTask = Task { @MainActor in
+                    do { try await Task.sleep(for:.seconds(3)) } catch { return }
+                    withAnimation { hud = nil }
+                }
             }
         ).accessibilityLabel(isBrightness ? "左侧上下滑动调整亮度":"右侧上下滑动调整音量")
     }
