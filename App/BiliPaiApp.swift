@@ -1,6 +1,7 @@
 import SwiftUI
 
 @main struct BiliPaiApp: App {
+    @UIApplicationDelegateAdaptor(PlayerOrientationDelegate.self) private var orientationDelegate
     init() { Preferences.register(); CacheMaintenance.apply(); _ = NetworkState.shared }
     @State private var session = Session()
     @AppStorage("accent") private var accent = "blue"

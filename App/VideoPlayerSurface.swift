@@ -2,6 +2,11 @@ import SwiftUI
 import AVKit
 import MediaPlayer
 
+final class PlayerOrientationDelegate:NSObject,UIApplicationDelegate {
+    static var mask:UIInterfaceOrientationMask = .portrait
+    func application(_ application:UIApplication,supportedInterfaceOrientationsFor window:UIWindow?) -> UIInterfaceOrientationMask { Self.mask }
+}
+
 struct VideoPlayerSurface:View {
     let player:AVPlayer
     var onRelease:() -> Void = {}
@@ -43,7 +48,10 @@ struct VideoPlayerSurface:View {
                         Image(systemName:"xmark").font(.system(size:20,weight:.semibold)).foregroundStyle(.white)
                             .frame(width:44,height:44).background(.black.opacity(0.5),in:Circle())
                     }.accessibilityLabel("退出自动全屏").padding(16)
-                }.statusBarHidden().onAppear { applyOrientation(orientation) }
+                }.statusBarHidden().task {
+                    try? await Task.sleep(for:.milliseconds(400))
+                    applyOrientation(orientation)
+                }
                     .onDisappear { applyOrientation(.portrait) }
             }
     }
@@ -52,8 +60,13 @@ struct VideoPlayerSurface:View {
         guard value == .landscapeRight || value == .portrait else { return }
         let mask: UIInterfaceOrientationMask = value == .landscapeRight ? .landscapeRight : .portrait
         guard let scene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else { return }
-        scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask)) { _ in }
-        if #available(iOS 16.0, *) { scene.windows.first?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations() }
+        PlayerOrientationDelegate.mask = mask
+        var controller = scene.windows.first(where: { $0.isKeyWindow })?.rootViewController
+        while let presented = controller?.presentedViewController { controller = presented }
+        controller?.setNeedsUpdateOfSupportedInterfaceOrientations()
+        scene.requestGeometryUpdate(.iOS(interfaceOrientations:mask)) { error in
+            print("Player rotation failed: \(error.localizedDescription)")
+        }
     }
 }
 
@@ -73,8 +86,9 @@ private struct BrightnessVolumeOverlay: View {
         GeometryReader { proxy in
             ZStack {
                 HStack(spacing: 0) {
-                    zone(isBrightness: true, width: proxy.size.width / 2)
-                    zone(isBrightness: false, width: proxy.size.width / 2)
+                    zone(isBrightness: true, width: proxy.size.width * 0.22)
+                    Spacer(minLength:0)
+                    zone(isBrightness: false, width: proxy.size.width * 0.22)
                 }
                 if let hud {
                     VStack(spacing: 8) {
@@ -89,7 +103,7 @@ private struct BrightnessVolumeOverlay: View {
                     .transition(.opacity)
                     .allowsHitTesting(false)
                 }
-            }.ignoresSafeArea()
+            }.frame(width:proxy.size.width,height:proxy.size.height * 0.6).position(x:proxy.size.width/2,y:proxy.size.height/2)
         }.allowsHitTesting(true)
     }
     private func zone(isBrightness: Bool, width: CGFloat) -> some View {
@@ -108,7 +122,7 @@ private struct BrightnessVolumeOverlay: View {
                 }
             }.onEnded { _ in
                 startY = nil
-                Task { try? await Task.sleep(for: .milliseconds(650)); await MainActor.run { withAnimation { hud = nil } } }
+                Task { try? await Task.sleep(for: .seconds(3)); await MainActor.run { withAnimation { hud = nil } } }
             }
         ).accessibilityLabel(isBrightness ? "左侧上下滑动调整亮度":"右侧上下滑动调整音量")
     }

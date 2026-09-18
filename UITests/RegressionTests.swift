@@ -22,10 +22,12 @@ final class RegressionTests:XCTestCase {
         XCTAssertTrue(app.buttons["退出自动全屏"].waitForExistence(timeout: 8), app.debugDescription)
         // The overlay is explicitly two equal zones. Swipe in each half and
         // require the corresponding live percentage HUD immediately.
+        let landscape = NSPredicate { _,_ in app.windows.firstMatch.frame.width > app.windows.firstMatch.frame.height }
+        XCTAssertEqual(XCTWaiter.wait(for:[XCTNSPredicateExpectation(predicate:landscape,object:nil)],timeout:8),.completed)
         let frame = app.windows.firstMatch.frame
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.12, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.亮度").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.音量").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
         _ = frame // keep the intended full-screen coordinate reference explicit
     }
