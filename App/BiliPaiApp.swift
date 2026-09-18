@@ -128,7 +128,9 @@ struct VideoGrid: View {
     let videos: [Video]
     var body: some View {
         LazyVGrid(columns: columns == 0 ? [GridItem(.adaptive(minimum: width), spacing: 14)] : Array(repeating:GridItem(.flexible(),spacing:14),count:columns), spacing: 22) {
-            ForEach(visible) { video in NavigationLink { VideoDetailView(video: video) } label: { VideoCard(video: video) }.buttonStyle(.plain) }
+            ForEach(Array(visible.enumerated()), id: \.element.id) { index, video in
+                NavigationLink { VideoDetailView(video: video, nextVideo: UserDefaults.standard.bool(forKey:"autoNextVideo") && index + 1 < visible.count ? visible[index + 1] : nil) } label: { VideoCard(video: video) }.buttonStyle(.plain)
+            }
         }.padding()
     }
 }

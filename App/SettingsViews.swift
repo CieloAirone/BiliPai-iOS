@@ -148,6 +148,7 @@ struct PlaybackPreferences: View {
     @AppStorage("rememberSpeed") private var rememberSpeed = false
     @AppStorage("audioFocus") private var audioFocus = true
     @AppStorage("completion") private var completion = "auto"
+    @AppStorage("autoNextVideo") private var autoNextVideo = true
     @AppStorage("autoplay") private var autoplay = true
     @AppStorage("rememberPosition") private var remember = true
     @AppStorage("quality") private var quality = 80
@@ -164,6 +165,8 @@ struct PlaybackPreferences: View {
                 Toggle("记忆上次播放速度",isOn:$rememberSpeed)
                 Picker("默认播放速度",selection:$speed) { ForEach([0.5,0.75,1,1.25,1.5,2],id:\.self) { Text(String(format:"%g×",$0)).tag($0) } }.disabled(rememberSpeed)
                 Picker("视频播完后",selection:$completion) { Text("自动").tag("auto");Text("暂停").tag("pause");Text("单集循环").tag("loop") }
+                Toggle("播放完自动播放下一个视频",isOn:$autoNextVideo)
+                Text("在首页、搜索、动态、历史和收藏列表中进入视频时生效；单独打开的视频不会猜测下一个内容。").font(.caption).foregroundStyle(.secondary)
                 Text("自动：分 P 视频继续下一集，普通单视频播完暂停。").font(.caption).foregroundStyle(.secondary)
             }
             Section("网络与画质") {

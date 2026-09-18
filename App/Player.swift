@@ -176,6 +176,8 @@ final class PlayerControllerLifetime {
 }
 struct VideoDetailView: View {
     let video: Video
+    let nextVideo: Video?
+    init(video: Video, nextVideo: Video? = nil) { self.video = video; self.nextVideo = nextVideo }
     @State private var playback = Playback()
     @State private var detail = JSON()
     @State private var cid = ""
@@ -184,6 +186,7 @@ struct VideoDetailView: View {
     @State private var busy = false
     @State private var coinConfirmation = false
     @State private var favoritePicker = false
+    @State private var nextDestination: Video?
     @State private var speed: Float = PlaybackOptions.speed()
     @AppStorage("danmakuEnabled") private var danmakuEnabled = true
     @State private var descriptionExpanded = UserDefaults.standard.bool(forKey:"expandDescription")
@@ -222,6 +225,7 @@ struct VideoDetailView: View {
         }.navigationBarTitleDisplayMode(.inline)
         .alert("提示", isPresented: Binding(get: { !message.isEmpty }, set: { if !$0 { message = "" } })) { Button("好") { message = "" } } message: { Text(message) }
         .sheet(isPresented:$favoritePicker) { FavoritePicker(aid:detail["aid"].string) }
+        .navigationDestination(item:$nextDestination) { VideoDetailView(video:$0) }
         .confirmationDialog("为视频投 1 枚硬币？", isPresented: $coinConfirmation, titleVisibility: .visible) {
             Button("投 1 枚硬币") { Task { await action("/x/web-interface/coin/add", ["bvid":video.id,"multiply":"1"]) {} } }
         }
@@ -231,6 +235,7 @@ struct VideoDetailView: View {
                 detail = try await BiliAPI.shared.request("/x/web-interface/view", ["bvid":video.id]); cid = detail["cid"].string
                 playback.onFinished = {
                     if let next = PlaybackOptions.nextCID(current:cid,pages:detail["pages"].array,behavior:UserDefaults.standard.string(forKey:"completion") ?? "auto") { cid = next }
+                    else if UserDefaults.standard.bool(forKey:"autoNextVideo"), let nextVideo { nextDestination = nextVideo }
                 }
 
             } catch { if !Task.isCancelled { message = error.localizedDescription } }

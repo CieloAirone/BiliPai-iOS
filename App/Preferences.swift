@@ -6,7 +6,7 @@ import CoreFoundation
 enum Preferences {
     static let defaults: [String: Any] = [
         "coverRatio":"16:10", "durationStyle":"outside", "compactStats":false, "fullCardTitle":false, "autoFullscreen":false, "subtitleAuto":"off", "showReplyLoadedCount":true, "incrementalDynamicRefresh":false, "dynamicLayout":"list", "autoHighestQuality":false, "mobileQuality":64, "audioQuality":30280, "dataSaver":"off",
-        "rememberSpeed":false, "lastSpeed":1.0, "audioFocus":true, "completion":"auto",
+        "rememberSpeed":false, "lastSpeed":1.0, "audioFocus":true, "completion":"auto", "autoNextVideo":true,
         "expandDescription":false, "copyText":false, "customAccent":"007AFF",
         "topTabs":"推荐,热门,排行榜,直播,番剧", "bottomOrder":"0,1,2,3,4",
         "privateAuthentication":false, "cacheDays":0, "cacheLimit":256,
