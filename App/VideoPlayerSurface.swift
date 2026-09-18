@@ -15,12 +15,18 @@ struct VideoPlayerSurface:View {
                 guard enabled,!entered else { return }
                 while !Task.isCancelled && !entered {
                     if player.currentItem?.status == .readyToPlay {
-                        entered = true
                         let size = player.currentItem?.presentationSize ?? .zero
-                        orientation = size.width > size.height ? .landscapeRight : .portrait
-                        showing = true
-                        player.playImmediately(atRate:PlaybackOptions.speed())
-                        break
+                        // AVPlayer reports .zero briefly after readyToPlay. Wait for
+                        // the first real presentation size so portrait clips do not
+                        // get presented as portrait by default and landscape clips
+                        // do not remain in portrait.
+                        if size.width > 10 && size.height > 10 {
+                            entered = true
+                            orientation = size.width > size.height ? .landscapeRight : .portrait
+                            showing = true
+                            player.playImmediately(atRate:PlaybackOptions.speed())
+                            break
+                        }
                     }
                     do { try await Task.sleep(for:.milliseconds(100)) } catch { return }
                 }
@@ -49,24 +55,55 @@ struct VideoPlayerSurface:View {
 /// Full-screen player gesture zones: left adjusts screen brightness, right adjusts media volume.
 private struct BrightnessVolumeOverlay: View {
     let player: AVPlayer
-    @State private var start: CGFloat = 0
-    @State private var value: CGFloat = 0
+    @State private var startY: CGFloat?
+    @State private var startValue: CGFloat = 0
+    @State private var hud: HUD?
+
+    private struct HUD: Equatable {
+        let title: String
+        let value: CGFloat
+        let symbol: String
+    }
     var body: some View {
         GeometryReader { proxy in
-            HStack(spacing:0) {
-                zone(isBrightness:true, width:proxy.size.width/2)
-                zone(isBrightness:false, width:proxy.size.width/2)
+            ZStack {
+                HStack(spacing: 0) {
+                    zone(isBrightness: true, width: proxy.size.width / 2)
+                    zone(isBrightness: false, width: proxy.size.width / 2)
+                }
+                if let hud {
+                    VStack(spacing: 8) {
+                        Image(systemName: hud.symbol).font(.system(size: 28, weight: .semibold))
+                        Text("\(hud.title) \(Int((hud.value * 100).rounded()))%")
+                            .font(.headline.monospacedDigit())
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 24).padding(.vertical, 18)
+                    .background(.black.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+                    .transition(.opacity)
+                    .allowsHitTesting(false)
+                }
             }.ignoresSafeArea()
         }.allowsHitTesting(true)
     }
     private func zone(isBrightness: Bool, width: CGFloat) -> some View {
         Color.clear.frame(width:width).contentShape(Rectangle()).gesture(
-            DragGesture(minimumDistance:8).onChanged { drag in
-                if value == 0 { value = isBrightness ? UIScreen.main.brightness : CGFloat(player.volume); start = drag.startLocation.y }
-                let delta = (start - drag.location.y) / 260
-                let next = min(1,max(0,value + delta))
+            DragGesture(minimumDistance: 8).onChanged { drag in
+                if startY == nil {
+                    startY = drag.startLocation.y
+                    startValue = isBrightness ? UIScreen.main.brightness : CGFloat(player.volume)
+                }
+                let delta = ((startY ?? drag.startLocation.y) - drag.location.y) / 260
+                let next = min(1, max(0, startValue + delta))
                 if isBrightness { UIScreen.main.brightness = next } else { player.volume = Float(next) }
-            }.onEnded { _ in value = 0 }
+                withAnimation(.easeOut(duration: 0.12)) {
+                    hud = HUD(title: isBrightness ? "亮度" : "音量", value: next,
+                              symbol: isBrightness ? "sun.max.fill" : (next == 0 ? "speaker.slash.fill" : "speaker.wave.2.fill"))
+                }
+            }.onEnded { _ in
+                startY = nil
+                Task { try? await Task.sleep(for: .milliseconds(650)); await MainActor.run { withAnimation { hud = nil } } }
+            }
         ).accessibilityLabel(isBrightness ? "左侧上下滑动调整亮度":"右侧上下滑动调整音量")
     }
 }
