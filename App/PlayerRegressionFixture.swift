@@ -10,6 +10,7 @@ struct RegressionFixtureRoot:View {
                 NavigationLink("空间测试") { SpaceView(mid:"123",request:SpaceFixture.request) }
                 NavigationLink("卡片比例测试") { VideoCardFixture() }
                 NavigationLink("窄屏分类测试") { HomeCategoryBar(tabs:NavigationOptions.top,selected:"推荐",select:{ _ in }).frame(width:288).padding(.horizontal,16).frame(maxWidth:.infinity).navigationTitle("窄屏分类测试") }
+                NavigationLink("竖屏播放器测试") { PlayerRegressionFixture(portrait:true) }
                 NavigationLink("播放器测试") { PlayerRegressionFixture() }
                 NavigationLink("评论测试") { CommentThreadView(oid:"123",root:Self.root,loader:Self.replies) }
             }.navigationTitle("回归测试")
@@ -31,6 +32,7 @@ struct RegressionFixtureRoot:View {
     }
 }
 struct PlayerRegressionFixture:View {
+    var portrait = false
     @State private var player = AVPlayer()
     @State private var released = false
     @State private var frames = 0
@@ -47,7 +49,7 @@ struct PlayerRegressionFixture:View {
             player.seek(to:.zero);player.play()
         }
         .task {
-            if player.currentItem == nil, let url = Bundle.main.url(forResource:"regression-video",withExtension:"mp4") {
+            if player.currentItem == nil, let url = Bundle.main.url(forResource:portrait ? "regression-portrait":"regression-video",withExtension:"mp4") {
                 let item = AVPlayerItem(url:url)
                 player.replaceCurrentItem(with:item)
                 player.play()

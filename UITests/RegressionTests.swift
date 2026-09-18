@@ -1,5 +1,13 @@
 import XCTest
 final class RegressionTests:XCTestCase {
+    func testPortraitVideoRemainsPortraitFullscreen() {
+        let app = XCUIApplication();app.launchArguments = ["--regression-fixtures","-autoFullscreen","YES"];app.launch()
+        app.buttons["竖屏播放器测试"].tap()
+        XCTAssertTrue(app.buttons["退出自动全屏"].waitForExistence(timeout:8))
+        XCTAssertGreaterThan(app.windows.firstMatch.frame.height,app.windows.firstMatch.frame.width)
+        let shot = XCTAttachment(screenshot:app.screenshot());shot.name = "PortraitFullscreen";shot.lifetime = .keepAlways;add(shot)
+    }
+
     func testAutomaticFullscreenAndReturnWithoutReopening() {
         let app = XCUIApplication();app.launchArguments = ["--regression-fixtures","-autoFullscreen","YES"];app.launch()
         app.buttons["播放器测试"].tap()
@@ -29,7 +37,8 @@ final class RegressionTests:XCTestCase {
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.亮度").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.88, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.音量").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
-        _ = frame // keep the intended full-screen coordinate reference explicit
+        _ = frame
+        let shot = XCTAttachment(screenshot:app.screenshot());shot.name = "LandscapeVolumeHUD";shot.lifetime = .keepAlways;add(shot)
     }
 
     func testNativeFullscreenKeepsVideoFramesAndReturnsInline() {
