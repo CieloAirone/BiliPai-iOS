@@ -23,9 +23,9 @@ final class RegressionTests:XCTestCase {
         // The overlay is explicitly two equal zones. Swipe in each half and
         // require the corresponding live percentage HUD immediately.
         let frame = app.windows.firstMatch.frame
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.32)), withVelocity: .default)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.25, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.亮度").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.32)), withVelocity: .default)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.68)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.75, dy: 0.32)), withVelocity: .default, thenHoldForDuration: 0.1)
         XCTAssertTrue(app.staticTexts.matching(identifier: "player.hud.音量").firstMatch.waitForExistence(timeout: 1), app.debugDescription)
         _ = frame // keep the intended full-screen coordinate reference explicit
     }
